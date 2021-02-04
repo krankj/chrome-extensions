@@ -1,0 +1,19 @@
+{
+  "name": "Sample Sudi App",
+  "description" : "Sample Sudarshan",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "logo192.png"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F",
+        "mac": "MacCtrl+Shift+F"
+      },
+      "description": "Opens hello.html"
+    }
+  }
+}
