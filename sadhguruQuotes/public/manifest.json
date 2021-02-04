@@ -3,8 +3,10 @@
   "description" : "Sample Sudarshan",
   "version": "1.0",
   "manifest_version": 3,
+  "chrome_url_overrides" : {
+    "newTab": "index.html"
+  },
   "action": {
-    "default_popup": "index.html",
     "default_icon": "logo192.png"
   },
   "commands": {
