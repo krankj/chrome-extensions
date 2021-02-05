@@ -3,12 +3,18 @@
   "description" : "Sample Sudarshan",
   "version": "1.0",
   "manifest_version": 3,
+  "background": {
+    "service_worker": "background.js"
+  },
   "chrome_url_overrides" : {
-    "newTab": "index.html"
+    "newtab": "index.html"
   },
   "action": {
     "default_icon": "logo192.png"
   },
+  "permissions": [
+    "tabs"
+  ],
   "commands": {
     "_execute_action": {
       "suggested_key": {
