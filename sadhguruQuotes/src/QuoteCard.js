@@ -1,10 +1,10 @@
-import React from "react";
+import React, { Children } from "react";
 // import axios from "axios";
 import sgSignature from "./assets/sg_signature.png";
 import SadhguruDefaultImage from "./assets/sadhguru.jpg";
 import "./QuoteCard.css";
 
-const QuoteCard = ({ publishedDate, quoteImage, quoteText }) => {
+const QuoteCard = ({ publishedDate, quoteImage, children }) => {
   // const [data, setData] = React.useState("");
   // React.useEffect(() => {
   //   axios
@@ -24,7 +24,7 @@ const QuoteCard = ({ publishedDate, quoteImage, quoteText }) => {
         }}
       />
       <div className="quoteTextContainer">
-        <p className="quoteText">{quoteText}</p>
+        <p className="quoteText">{children}</p>
         <img
           className="sg-signature"
           src={sgSignature}
