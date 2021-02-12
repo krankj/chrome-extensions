@@ -15,7 +15,7 @@ const Quote = () => {
     <div className="quoteContainer">
       <p className="quote">
         Science should be just a quest to know, not a tool for unbridled
-        exploitation. Okay I get this and that and this and that
+        exploitation.
       </p>
       <img
         className="sg-signature"
