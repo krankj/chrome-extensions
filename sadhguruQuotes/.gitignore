@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
+build.crx
+build.pem
 
 # testing
 /coverage
