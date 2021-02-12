@@ -10,7 +10,7 @@ function App() {
           February 12, 2021
         </p>
         <img
-          src="https://pbs.twimg.com/media/Es-gepHVcAAwUvE.jpg"
+          src="https://pbs.twimg.com/media/Et_luunVgAM1G_Z.jpg"
           className="sg-image"
           alt="Sadhguru"
           onError={(e) => {

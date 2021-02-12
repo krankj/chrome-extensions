@@ -5,6 +5,7 @@
 
 .sg-image {
   height: 400px;
+  box-shadow: 0 6px 12px 0 rgba(87, 51, 0, 0.7), 0 8px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
 .app {
