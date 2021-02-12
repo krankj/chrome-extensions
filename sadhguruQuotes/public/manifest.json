@@ -1,6 +1,6 @@
 {
-  "name": "Sample Sudi App",
-  "description" : "Sample Sudarshan",
+  "name": "Daily Sadhguru Quotes",
+  "description" : "Remind yourselves of the deep wisdom provided by Sadhguru on every new tab",
   "version": "1.0",
   "manifest_version": 3,
   "background": {
