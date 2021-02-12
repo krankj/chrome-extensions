@@ -1,22 +1,27 @@
-.App {
+.container {
   text-align: center;
 }
 
-.App-logo {
-  pointer-events: none;
+.sg-image {
+  height: 400px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app {
+  width: 80%;
+  margin: 0 auto;
+  padding: 0 48px;
+  background-color: #fffbf2;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: rgb(138, 70, 6);
 }
 
-.App-link {
-  color: #61dafb;
+@media screen and (max-width: 600px) {
+  .sg-image {
+    height: 200px;
+  }
 }
