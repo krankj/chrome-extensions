@@ -1,6 +1,7 @@
 import React from "react";
 // import axios from "axios";
 import sgSignature from "./assets/sg_signature.png";
+import "./Quote.css";
 
 const Quote = () => {
   // const [data, setData] = React.useState("");
@@ -11,13 +12,17 @@ const Quote = () => {
   // }, []);
 
   return (
-    <>
-      <p>
+    <div className="quoteContainer">
+      <p className="quote">
         Science should be just a quest to know, not a tool for unbridled
         exploitation.
       </p>
-      <img src={sgSignature} alt="Sadhguru Signature" />
-    </>
+      <img
+        className="sg-signature"
+        src={sgSignature}
+        alt="Sadhguru Signature"
+      />
+    </div>
   );
 };
 
