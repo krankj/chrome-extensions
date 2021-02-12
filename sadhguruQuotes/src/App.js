@@ -1,5 +1,5 @@
 import "./App.css";
-import Heading from "./Quote";
+import Quote from "./Quote";
 import Sadhguru from "./assets/sadhguru.jpg";
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
     <div className="container">
       <header className="app">
         <img src={Sadhguru} className="sg-image" alt="Sadhguru" />
-        <Heading />
+        <Quote />
       </header>
     </div>
   );
