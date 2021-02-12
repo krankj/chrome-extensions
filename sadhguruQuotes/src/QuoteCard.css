@@ -1,0 +1,46 @@
+.quoteCard {
+  padding: 0 48px;
+  background-color: #fffbf2;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: rgb(138, 70, 6);
+  text-align: center;
+}
+
+.quoteDate {
+  font-family: "Sadhguru Thin";
+  font-size: 1.2rem;
+}
+
+.sg-image {
+  height: 400px;
+  box-shadow: 0 6px 12px 0 rgba(87, 51, 0, 0.7), 0 8px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.quoteTextContainer {
+  margin: 2rem 0 0 0;
+}
+
+.quoteText {
+  max-width: 800px;
+}
+
+.sg-signature {
+  height: 60px;
+}
+
+@media screen and (max-width: 600px) {
+  .sg-image {
+    height: 200px;
+  }
+  .quoteText {
+    font-size: 1.3rem;
+  }
+  .sg-signature {
+    height: 45px;
+  }
+}
