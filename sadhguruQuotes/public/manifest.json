@@ -10,7 +10,7 @@
     "newtab": "index.html"
   },
   "action": {
-    "default_icon": "logo192.png"
+    "default_icon": "sg-icon.png"
   },
   "permissions": [
     "tabs"
