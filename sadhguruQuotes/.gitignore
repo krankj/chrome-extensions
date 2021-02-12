@@ -6,6 +6,7 @@
 .pnp.js
 build.crx
 build.pem
+twitter.txt
 
 # testing
 /coverage
