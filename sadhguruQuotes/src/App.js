@@ -5,7 +5,7 @@ import SadhguruDefaultImage from "./assets/sadhguru.jpg";
 function App() {
   return (
     <div className="container">
-      <header className="app">
+      <div className="app">
         <p style={{ fontFamily: "Sadhguru Thin", fontSize: "1.2rem" }}>
           February 12, 2021
         </p>
@@ -18,7 +18,7 @@ function App() {
           }}
         />
         <Quote />
-      </header>
+      </div>
     </div>
   );
 }
