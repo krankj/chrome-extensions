@@ -1,12 +1,22 @@
 import "./App.css";
 import Quote from "./Quote";
-import Sadhguru from "./assets/sadhguru.jpg";
+import SadhguruDefaultImage from "./assets/sadhguru.jpg";
 
 function App() {
   return (
     <div className="container">
       <header className="app">
-        <img src={Sadhguru} className="sg-image" alt="Sadhguru" />
+        <p style={{ fontFamily: "Sadhguru Thin", fontSize: "1.2rem" }}>
+          February 12, 2021
+        </p>
+        <img
+          src="https://pbs.twimg.com/media/Es-gepHVcAAwUvE.jpg"
+          className="sg-image"
+          alt="Sadhguru"
+          onError={(e) => {
+            e.target.src = SadhguruDefaultImage;
+          }}
+        />
         <Quote />
       </header>
     </div>
