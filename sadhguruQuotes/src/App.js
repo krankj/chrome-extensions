@@ -6,11 +6,11 @@ function App() {
     <div className="container">
       <div className="app">
         <QuoteCard
-          publishedDate="February 12, 2021"
-          quoteImage="https://pbs.twimg.com/media/Et_luunVgAM1G_Z.jpg"
+          publishedDate="February 14, 2021"
+          quoteImage="https://pbs.twimg.com/media/EuJ5HQRU4AAttxG.jpg"
         >
-          If every day you break one limitation, depending upon how many
-          limitations you have, one day you will be liberated
+          Love is not about somebody. Love is not some kind of act. Love is the
+          way you are.
         </QuoteCard>
       </div>
     </div>

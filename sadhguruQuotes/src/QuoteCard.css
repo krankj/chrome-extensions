@@ -22,11 +22,8 @@
 }
 
 .quoteTextContainer {
-  margin: 2rem 0 0 0;
-}
-
-.quoteText {
   max-width: 800px;
+  margin: 2rem 0 0 0;
 }
 
 .sg-signature {
