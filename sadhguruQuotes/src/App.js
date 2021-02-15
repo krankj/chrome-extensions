@@ -6,11 +6,11 @@ function App() {
     <div className="container">
       <div className="app">
         <QuoteCard
-          publishedDate="February 14, 2021"
-          quoteImage="https://pbs.twimg.com/media/EuJ5HQRU4AAttxG.jpg"
+          publishedDate="February 15, 2021"
+          quoteImage="https://pbs.twimg.com/media/EuEvVcWUcAAwO2W.jpg"
         >
-          Love is not about somebody. Love is not some kind of act. Love is the
-          way you are.
+          A seeker means someone who has not made any conclusions about
+          anything.
         </QuoteCard>
       </div>
     </div>
