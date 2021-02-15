@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
 import "./App.css";
 import data from "./assets/word-set-magoosh.json";
 
@@ -16,6 +17,19 @@ function App() {
   const handleNewWordClick = () => {
     setRandomNumber(randomNumberGenerator(DATA_SIZE));
   };
+
+  useEffect(() => {
+    const handler = (event) => {
+      if ((event.key = " ")) {
+        //passe a function to state setter to get fresh state value
+        handleNewWordClick();
+      }
+    };
+
+    window.addEventListener("keypress", handler);
+
+    return () => window.removeEventListener("keypress", handler);
+  }, []);
 
   return (
     <div className="container">
@@ -41,6 +55,14 @@ function App() {
         <button className="newWordButton" onClick={handleNewWordClick}>
           Refresh
         </button>
+        <input
+          type="hidden"
+          onKeyPress={(e) => {
+            if (e.key === " ") {
+              handleNewWordClick();
+            }
+          }}
+        />
       </div>
     </div>
   );

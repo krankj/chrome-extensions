@@ -38,3 +38,7 @@
 .newWordButton:hover {
   cursor: pointer;
 }
+
+.newWordButton:focus {
+  outline: none;
+}
