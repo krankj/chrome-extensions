@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
 import "./App.css";
 import data from "./assets/word-set-magoosh.json";
 
@@ -18,17 +17,14 @@ function App() {
     setRandomNumber(randomNumberGenerator(DATA_SIZE));
   };
 
-  useEffect(() => {
-    const handler = (event) => {
-      if ((event.key = " ")) {
-        //passe a function to state setter to get fresh state value
-        handleNewWordClick();
+  React.useEffect(() => {
+    function handleSpaceKey(e) {
+      if (e.key === " ") {
+        setRandomNumber(randomNumberGenerator(DATA_SIZE));
       }
-    };
-
-    window.addEventListener("keypress", handler);
-
-    return () => window.removeEventListener("keypress", handler);
+    }
+    window.addEventListener("keypress", handleSpaceKey);
+    return () => window.removeEventListener("keypress", handleSpaceKey);
   }, []);
 
   return (
