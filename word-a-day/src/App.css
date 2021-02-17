@@ -19,6 +19,15 @@
 
 .text {
   text-align: left;
+  font-family: "Sadhguru Thin";
+}
+
+.word {
+  font-family: "Sadhguru Thin";
+}
+
+.example {
+  font-family: "Sadhguru Thin";
 }
 
 .newWordButton {
