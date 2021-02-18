@@ -1,7 +1,3 @@
-.container {
-  text-align: center;
-}
-
 .app {
   max-width: 1200px;
   margin: 0 auto;
@@ -15,19 +11,53 @@
   font-size: calc(10px + 2vmin);
   color: white;
   height: 600px;
+  animation: fadein 1s;
+}
+.card {
+  height: 400px;
+  width: 400px;
+  padding: 2rem;
+  border: 7px solid yellowgreen;
+
+  /* box-shadow: 0 6px 12px 0 rgba(145, 255, 1, 0.74); */
 }
 
-.text {
-  text-align: left;
-  font-family: "Sadhguru Thin";
+.heading {
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  font-family: "Sadhguru Thick 1";
+  color: yellowgreen;
+}
+
+strong {
+  color: yellowgreen;
+  font-style: italic;
 }
 
 .word {
   font-family: "Sadhguru Thin";
+  font-size: 3.2rem;
+  letter-spacing: 1px;
 }
 
-.example {
+.wordDefinition {
   font-family: "Sadhguru Thin";
+  font-size: 1.6rem;
+}
+
+.wordExample {
+  font-family: "Sadhguru Thin";
+  font-size: 1rem;
+}
+
+.date {
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  color: yellowgreen;
+}
+
+sup {
+  text-transform: lowercase;
 }
 
 .newWordButton {
@@ -50,4 +80,13 @@
 
 .newWordButton:focus {
   outline: none;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

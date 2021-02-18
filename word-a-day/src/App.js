@@ -5,6 +5,7 @@ import data from "./assets/word-set-magoosh.json";
 const DATA_SIZE = data.length;
 
 function randomNumberGenerator(max) {
+  //return 940;
   return Math.floor(Math.random() * max);
 }
 
@@ -26,39 +27,37 @@ function App() {
     window.addEventListener("keypress", handleSpaceKey);
     return () => window.removeEventListener("keypress", handleSpaceKey);
   }, []);
+  console.log(randomNumber);
 
   return (
     <div className="container">
       <div className="app">
-        {data[randomNumber]["back"].map((ele) => (
-          <div>
-            {ele.type === "word" && <h1 className="word">{ele.content}</h1>}
-            {ele.type === "text" && (
-              <p
-                dangerouslySetInnerHTML={{ __html: ele.content }}
-                className="text"
-              />
-            )}
-            {ele.type === "example" && (
-              <p
-                dangerouslySetInnerHTML={{ __html: ele.content }}
-                className="example"
-              />
-            )}
-          </div>
-        ))}
-
+        <div className="card">
+          <p className="heading">New Word Daily</p>
+          {data[randomNumber]["back"].map((ele) => (
+            <div>
+              {ele.type === "word" && <h1 className="word">{ele.content}</h1>}
+              {ele.type === "text" && (
+                <p
+                  dangerouslySetInnerHTML={{ __html: ele.content }}
+                  className="wordDefinition"
+                />
+              )}
+              {ele.type === "example" && (
+                <p
+                  dangerouslySetInnerHTML={{ __html: ele.content }}
+                  className="wordExample"
+                />
+              )}
+            </div>
+          ))}
+          <p className="date">
+            18<sup>th</sup> February, 2021
+          </p>
+        </div>
         <button className="newWordButton" onClick={handleNewWordClick}>
           Refresh
         </button>
-        <input
-          type="hidden"
-          onKeyPress={(e) => {
-            if (e.key === " ") {
-              handleNewWordClick();
-            }
-          }}
-        />
       </div>
     </div>
   );
