@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import "./App.css";
 import data from "./assets/word-set-magoosh.json";
+import date from "date-and-time";
+import ordinal from "date-and-time/plugin/ordinal";
 
+date.plugin(ordinal);
 const DATA_SIZE = data.length;
 
 function randomNumberGenerator(max) {
@@ -23,9 +26,10 @@ function App() {
         setRandomNumber(randomNumberGenerator(DATA_SIZE));
       }
     }
-    window.addEventListener("keypress", handleSpaceKey);
-    return () => window.removeEventListener("keypress", handleSpaceKey);
+    window.addEventListener("keyup", handleSpaceKey);
+    return () => window.removeEventListener("keyup", handleSpaceKey);
   }, []);
+
   console.log(randomNumber);
 
   return (
@@ -34,9 +38,7 @@ function App() {
         <div className="card">
           <div className="header">
             <p className="heading">New Word Daily</p>
-            <p className="date">
-              18<sup>th</sup> February, 2021
-            </p>
+            <p className="date">{date.format(new Date(), "MMM DD, YYYY")}</p>
           </div>
           <div key={randomNumber} className="mainContent">
             {data[randomNumber]["back"].map((ele, id) => (
