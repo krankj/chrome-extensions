@@ -3,6 +3,7 @@ import "./App.css";
 import data from "./assets/word-set-magoosh.json";
 import date from "date-and-time";
 import ordinal from "date-and-time/plugin/ordinal";
+import classNames from "classnames";
 
 date.plugin(ordinal);
 const DATA_SIZE = data.length;
@@ -16,8 +17,16 @@ function App() {
     randomNumberGenerator(DATA_SIZE)
   );
 
+  const themeOptions = { green: true, orange: false };
+
+  const [theme, setTheme] = useState(themeOptions);
+
   const handleNewWordClick = () => {
     setRandomNumber(randomNumberGenerator(DATA_SIZE));
+  };
+
+  const handleColorChange = () => {
+    setTheme({ orange: true, green: false });
   };
 
   React.useEffect(() => {
@@ -35,7 +44,8 @@ function App() {
   return (
     <div className="container">
       <div className="app">
-        <div className="card">
+        <button onClick={handleColorChange}>Change color</button>
+        <div className={classNames("card", theme, { border: true })}>
           <div className="header">
             <p className="heading">New Word Daily</p>
             <p className="date">{date.format(new Date(), "MMM DD, YYYY")}</p>
@@ -46,7 +56,10 @@ function App() {
                 {ele.type === "word" && <h1 className="word">{ele.content}</h1>}
                 {ele.type === "text" && (
                   <p
-                    dangerouslySetInnerHTML={{ __html: ele.content }}
+                    dangerouslySetInnerHTML={{
+                      __html: ele.content,
+                      color: "red",
+                    }}
                     className="wordDefinition"
                   />
                 )}
