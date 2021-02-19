@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import data from "./assets/word-set-magoosh.json";
 
 const DATA_SIZE = data.length;
 
 function randomNumberGenerator(max) {
-  //return 940;
   return Math.floor(Math.random() * max);
 }
 
@@ -33,27 +32,31 @@ function App() {
     <div className="container">
       <div className="app">
         <div className="card">
-          <p className="heading">New Word Daily</p>
-          {data[randomNumber]["back"].map((ele) => (
-            <div>
-              {ele.type === "word" && <h1 className="word">{ele.content}</h1>}
-              {ele.type === "text" && (
-                <p
-                  dangerouslySetInnerHTML={{ __html: ele.content }}
-                  className="wordDefinition"
-                />
-              )}
-              {ele.type === "example" && (
-                <p
-                  dangerouslySetInnerHTML={{ __html: ele.content }}
-                  className="wordExample"
-                />
-              )}
-            </div>
-          ))}
-          <p className="date">
-            18<sup>th</sup> February, 2021
-          </p>
+          <div className="header">
+            <p className="heading">New Word Daily</p>
+            <p className="date">
+              18<sup>th</sup> February, 2021
+            </p>
+          </div>
+          <div key={randomNumber} className="mainContent">
+            {data[randomNumber]["back"].map((ele, id) => (
+              <div key={`${id}-${randomNumber}`}>
+                {ele.type === "word" && <h1 className="word">{ele.content}</h1>}
+                {ele.type === "text" && (
+                  <p
+                    dangerouslySetInnerHTML={{ __html: ele.content }}
+                    className="wordDefinition"
+                  />
+                )}
+                {ele.type === "example" && (
+                  <p
+                    dangerouslySetInnerHTML={{ __html: ele.content }}
+                    className="wordExample"
+                  />
+                )}
+              </div>
+            ))}
+          </div>
         </div>
         <button className="newWordButton" onClick={handleNewWordClick}>
           Refresh
