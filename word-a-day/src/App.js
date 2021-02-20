@@ -9,6 +9,7 @@ date.plugin(ordinal);
 const DATA_SIZE = data.length;
 
 function randomNumberGenerator(max) {
+  //return 856;
   return Math.floor(Math.random() * max);
 }
 
@@ -26,7 +27,7 @@ function App() {
   };
 
   const handleColorChange = () => {
-    setTheme({ orange: true, green: false });
+    setTheme({ orange: !theme.orange, green: !theme.green });
   };
 
   React.useEffect(() => {
@@ -39,14 +40,24 @@ function App() {
     return () => window.removeEventListener("keyup", handleSpaceKey);
   }, []);
 
+  function getStyle(style) {
+    let styleArr = style.split("");
+    styleArr[0] = styleArr[0].toUpperCase();
+    style = styleArr.join("");
+    return { [`green${style}`]: theme.green, [`orange${style}`]: theme.orange };
+  }
+
   console.log(randomNumber);
 
   return (
     <div className="container">
       <div className="app">
-        <button onClick={handleColorChange}>Change color</button>
-        <div className={classNames("card", theme, { border: true })}>
-          <div className="header">
+        <div
+          className={classNames("card", getStyle("border"), {
+            thickBorder: true,
+          })}
+        >
+          <div className={classNames("header", getStyle("font"))}>
             <p className="heading">New Word Daily</p>
             <p className="date">{date.format(new Date(), "MMM DD, YYYY")}</p>
           </div>
@@ -57,15 +68,22 @@ function App() {
                 {ele.type === "text" && (
                   <p
                     dangerouslySetInnerHTML={{
-                      __html: ele.content,
-                      color: "red",
+                      __html: ele.content.replace(
+                        "<strong>",
+                        `<strong class=${classNames(getStyle("font"))}>`
+                      ),
                     }}
                     className="wordDefinition"
                   />
                 )}
                 {ele.type === "example" && (
                   <p
-                    dangerouslySetInnerHTML={{ __html: ele.content }}
+                    dangerouslySetInnerHTML={{
+                      __html: ele.content.replace(
+                        "<strong>",
+                        `<strong class=${classNames(getStyle("font"))}>`
+                      ),
+                    }}
                     className="wordExample"
                   />
                 )}
@@ -73,9 +91,12 @@ function App() {
             ))}
           </div>
         </div>
-        <button className="newWordButton" onClick={handleNewWordClick}>
-          Refresh
-        </button>
+        <div className={classNames("controls", theme)}>
+          <button className="newWordButton" onClick={handleNewWordClick}>
+            Refresh
+          </button>
+          <button onClick={handleColorChange}>Change color</button>
+        </div>
       </div>
     </div>
   );

@@ -5,16 +5,28 @@
   --primaryFontColor: white;
 }
 
-.border {
+.thickBorder {
   border: 7px solid;
 }
 
-.green {
+.thinBorder {
+  border: 2px solid;
+}
+
+.greenBorder {
   border-color: var(--green);
 }
 
-.orange {
+.orangeBorder {
   border-color: var(--orange);
+}
+
+.greenFont {
+  color: var(--green);
+}
+
+.orangeFont {
+  color: var(--orange);
 }
 
 .app {
@@ -41,7 +53,6 @@
 .header {
   display: flex;
   justify-content: space-between;
-  color: inherit;
 }
 
 .heading {
@@ -67,7 +78,6 @@ strong {
 .word {
   font-family: "Sadhguru Thin";
   font-size: 3.2rem;
-  letter-spacing: 1px;
 }
 
 .wordDefinition {
@@ -84,24 +94,30 @@ sup {
   text-transform: lowercase;
 }
 
-.newWordButton {
+.controls {
   position: absolute;
   right: 50%;
   bottom: 0;
   transform: translate(50%);
+}
+
+button {
   border: none;
   padding: 1rem;
   text-transform: uppercase;
   font-weight: bold;
   background: var(--background);
   color: var(--primaryFontColor);
+  font-family: "Sadhguru Thin";
+  font-size: 0.5rem;
+  opacity: 0.4;
 }
 
-.newWordButton:hover {
+button:hover {
   cursor: pointer;
 }
 
-.newWordButton:focus {
+button:focus {
   outline: none;
 }
 
