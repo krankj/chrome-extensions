@@ -1,10 +1,10 @@
-import React, { createRef, useState } from "react";
+import React, { createRef, useEffect, useRef, useState } from "react";
 import "./App.css";
 import data from "./assets/word-set-magoosh.json";
 import date from "date-and-time";
 import ordinal from "date-and-time/plugin/ordinal";
 import classNames from "classnames";
-import { useScreenshot } from "use-react-screenshot";
+import html2canvas from "html2canvas";
 
 date.plugin(ordinal);
 const DATA_SIZE = data.length;
@@ -18,6 +18,31 @@ function App() {
   const [randomNumber, setRandomNumber] = useState(
     randomNumberGenerator(DATA_SIZE)
   );
+
+  const [dataUrl, setDataUrl] = useState();
+  const [fileName, setFileName] = useState("word-a-day.jpeg");
+  const firstRender = useRef(true);
+
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    downloadImage(dataUrl);
+  }, [dataUrl, fileName]);
+
+  const takescreenshotAndSave = () => {
+    html2canvas(document.querySelector(".card")).then((canvas) => {
+      setDataUrl(canvas.toDataURL("image/jpeg"));
+    });
+  };
+
+  function downloadImage(data) {
+    let a = document.createElement("a");
+    a.href = data;
+    a.download = fileName;
+    a.click();
+  }
 
   const themeOptions = { green: true, orange: false };
 
@@ -73,7 +98,11 @@ function App() {
           <div key={randomNumber} className="mainContent">
             {data[randomNumber]["back"].map((ele, id) => (
               <div key={`${id}-${randomNumber}`}>
-                {ele.type === "word" && <h1 className="word">{ele.content}</h1>}
+                {ele.type === "word" && (
+                  <>
+                    <h1 className="word">{ele.content}</h1>
+                  </>
+                )}
                 {ele.type === "text" && (
                   <p
                     dangerouslySetInnerHTML={{
@@ -105,6 +134,7 @@ function App() {
             Refresh
           </button>
           <button onClick={handleColorChange}>Toggle color</button>
+          <button onClick={takescreenshotAndSave}>Save word</button>
         </div>
       </div>
     </div>
