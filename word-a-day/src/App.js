@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { createRef, useState } from "react";
 import "./App.css";
 import data from "./assets/word-set-magoosh.json";
 import date from "date-and-time";
 import ordinal from "date-and-time/plugin/ordinal";
 import classNames from "classnames";
+import { useScreenshot } from "use-react-screenshot";
 
 date.plugin(ordinal);
 const DATA_SIZE = data.length;
@@ -40,10 +41,18 @@ function App() {
     return () => window.removeEventListener("keyup", handleSpaceKey);
   }, []);
 
+  const capitalize = (word) => {
+    if (typeof word !== "string") return "";
+    return word.charAt(0).toUpperCase() + word.slice(1);
+
+    //or
+    // let wordArr = word.split("");
+    // wordArr[0] = wordArr[0].toUpperCase();
+    // word = wordArr.join("");
+  };
+
   function getStyle(style) {
-    let styleArr = style.split("");
-    styleArr[0] = styleArr[0].toUpperCase();
-    style = styleArr.join("");
+    style = capitalize(style);
     return { [`green${style}`]: theme.green, [`orange${style}`]: theme.orange };
   }
 
@@ -95,7 +104,7 @@ function App() {
           <button className="newWordButton" onClick={handleNewWordClick}>
             Refresh
           </button>
-          <button onClick={handleColorChange}>Change color</button>
+          <button onClick={handleColorChange}>Toggle color</button>
         </div>
       </div>
     </div>

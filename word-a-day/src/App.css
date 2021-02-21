@@ -90,8 +90,8 @@ strong {
   font-size: 1rem;
 }
 
-sup {
-  text-transform: lowercase;
+.screenshot {
+  margin: 20px 0;
 }
 
 .controls {
