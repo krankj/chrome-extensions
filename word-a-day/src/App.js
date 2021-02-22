@@ -1,26 +1,56 @@
-import React, { createRef, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 import data from "./assets/word-set-magoosh.json";
 import date from "date-and-time";
 import ordinal from "date-and-time/plugin/ordinal";
 import classNames from "classnames";
 import html2canvas from "html2canvas";
+import Content from "./Content";
+import { randomNumberGenerator } from "./utils";
 
 date.plugin(ordinal);
+const datePattern = date.compile("DD-MM-YYYY");
+
 const DATA_SIZE = data.length;
 
-function randomNumberGenerator(max) {
-  //return 856;
-  return Math.floor(Math.random() * max);
+function createBinaryString(nMask) {
+  // nMask must be between -2147483648 and 2147483647
+  if (nMask > 2 ** 31 - 1)
+    throw "number too large. number shouldn't be > 2**31-1"; //added
+  if (nMask < -1 * 2 ** 31)
+    throw "number too far negative, number shouldn't be < 2**31"; //added
+  for (
+    var nFlag = 0, nShifted = nMask, sMask = "";
+    nFlag < 3;
+    nFlag++, sMask += String(nShifted >>> 16), nShifted <<= 1
+  );
+  console.log("Smask is", sMask);
+  sMask = sMask.replace(/\B(?=(.{8})+(?!.))/g, " "); // added
+  return sMask;
+}
+
+function toggleNext(n) {
+  return createBinaryString(n)
+    .split("")
+    .map((x) => +x);
 }
 
 function App() {
   const [randomNumber, setRandomNumber] = useState(
     randomNumberGenerator(DATA_SIZE)
   );
-
   const [dataUrl, setDataUrl] = useState();
-  const [fileName, setFileName] = useState("word-a-day.jpeg");
+  const [fileName, setFileName] = useState(
+    `NWD-${date.format(new Date(), datePattern)}.jpg`
+  );
+  const [switchPos, setSwitchPos] = useState(4);
+  const switchesArr = toggleNext(switchPos);
+  const themeOptions = {
+    green: switchesArr[0],
+    orange: switchesArr[1],
+    magenta: switchesArr[2],
+  };
+  const [theme, setTheme] = useState(themeOptions);
   const firstRender = useRef(true);
 
   useEffect(() => {
@@ -29,7 +59,11 @@ function App() {
       return;
     }
     downloadImage(dataUrl);
-  }, [dataUrl, fileName]);
+  }, [dataUrl]);
+
+  const handleNewWordClick = () => {
+    setRandomNumber(randomNumberGenerator(DATA_SIZE));
+  };
 
   const takescreenshotAndSave = () => {
     html2canvas(document.querySelector(".card")).then((canvas) => {
@@ -37,23 +71,33 @@ function App() {
     });
   };
 
-  function downloadImage(data) {
+  const downloadImage = (data) => {
     let a = document.createElement("a");
     a.href = data;
     a.download = fileName;
     a.click();
-  }
-
-  const themeOptions = { green: true, orange: false };
-
-  const [theme, setTheme] = useState(themeOptions);
-
-  const handleNewWordClick = () => {
-    setRandomNumber(randomNumberGenerator(DATA_SIZE));
   };
 
+  useEffect(() => {
+    const switchesArr = toggleNext(switchPos);
+    console.log("Switch pos is", switchPos);
+    console.log("Switches arr is", switchesArr);
+    const themeOptions = {
+      green: switchesArr[0],
+      orange: switchesArr[1],
+      magenta: switchesArr[2],
+    };
+    console.log("Theme options are", themeOptions);
+
+    setTheme(themeOptions);
+  }, [switchPos]);
+
   const handleColorChange = () => {
-    setTheme({ orange: !theme.orange, green: !theme.green });
+    if (switchPos === 1) {
+      setSwitchPos(4);
+    } else {
+      setSwitchPos(switchPos >> 1);
+    }
   };
 
   React.useEffect(() => {
@@ -91,10 +135,7 @@ function App() {
             thickBorder: true,
           })}
         >
-          <div className={classNames("header", getStyle("font"))}>
-            <p className="heading">New Word Daily</p>
-            <p className="date">{date.format(new Date(), "MMM DD, YYYY")}</p>
-          </div>
+          <Header getStyle={getStyle} />
           <div key={randomNumber} className="mainContent">
             {data[randomNumber]["back"].map((ele, id) => (
               <Content
@@ -102,6 +143,7 @@ function App() {
                 id={id}
                 randomNumber={randomNumber}
                 getStyle={getStyle}
+                setFileName={setFileName}
               />
             ))}
           </div>
@@ -118,35 +160,10 @@ function App() {
   );
 }
 
-const Content = ({ ele, id, randomNumber, getStyle }) => (
-  <div key={`${id}-${randomNumber}`}>
-    {ele.type === "word" && (
-      <>
-        <h1 className="word">{ele.content}</h1>
-      </>
-    )}
-    {ele.type === "text" && (
-      <p
-        dangerouslySetInnerHTML={{
-          __html: ele.content.replace(
-            "<strong>",
-            `<strong class=${classNames(getStyle("font"))}>`
-          ),
-        }}
-        className="wordDefinition"
-      />
-    )}
-    {ele.type === "example" && (
-      <p
-        dangerouslySetInnerHTML={{
-          __html: ele.content.replace(
-            "<strong>",
-            `<strong class=${classNames(getStyle("font"))}>`
-          ),
-        }}
-        className="wordExample"
-      />
-    )}
+const Header = ({ getStyle }) => (
+  <div className={classNames("header", getStyle("font"))}>
+    <p className="heading">New Word Daily</p>
+    <p className="date">{date.format(new Date(), "MMM DD, YYYY")}</p>
   </div>
 );
 
