@@ -1,6 +1,7 @@
 :root {
   --orange: orange;
   --green: yellowgreen;
+  --magenta: magenta;
   --background: #282c34;
   --primaryFontColor: white;
 }
@@ -21,12 +22,20 @@
   border-color: var(--orange);
 }
 
+.magentaBorder {
+  border-color: var(--magenta);
+}
+
 .greenFont {
   color: var(--green);
 }
 
 .orangeFont {
   color: var(--orange);
+}
+
+.magentaFont {
+  color: var(--magenta);
 }
 
 .app {

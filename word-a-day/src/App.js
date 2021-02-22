@@ -21,10 +21,9 @@ function createBinaryString(nMask) {
     throw "number too far negative, number shouldn't be < 2**31"; //added
   for (
     var nFlag = 0, nShifted = nMask, sMask = "";
-    nFlag < 3;
-    nFlag++, sMask += String(nShifted >>> 16), nShifted <<= 1
+    nFlag < 32;
+    nFlag++, sMask += String(nShifted >>> 31), nShifted <<= 1
   );
-  console.log("Smask is", sMask);
   sMask = sMask.replace(/\B(?=(.{8})+(?!.))/g, " "); // added
   return sMask;
 }
@@ -44,11 +43,10 @@ function App() {
     `NWD-${date.format(new Date(), datePattern)}.jpg`
   );
   const [switchPos, setSwitchPos] = useState(4);
-  const switchesArr = toggleNext(switchPos);
   const themeOptions = {
-    green: switchesArr[0],
-    orange: switchesArr[1],
-    magenta: switchesArr[2],
+    green: 1,
+    orange: 0,
+    magenta: 0,
   };
   const [theme, setTheme] = useState(themeOptions);
   const firstRender = useRef(true);
@@ -80,15 +78,12 @@ function App() {
 
   useEffect(() => {
     const switchesArr = toggleNext(switchPos);
-    console.log("Switch pos is", switchPos);
-    console.log("Switches arr is", switchesArr);
+    let length = switchesArr.length;
     const themeOptions = {
-      green: switchesArr[0],
-      orange: switchesArr[1],
-      magenta: switchesArr[2],
+      green: switchesArr[length - 3],
+      orange: switchesArr[length - 2],
+      magenta: switchesArr[length - 1],
     };
-    console.log("Theme options are", themeOptions);
-
     setTheme(themeOptions);
   }, [switchPos]);
 
@@ -122,7 +117,11 @@ function App() {
 
   function getStyle(style) {
     style = capitalize(style);
-    return { [`green${style}`]: theme.green, [`orange${style}`]: theme.orange };
+    return {
+      [`green${style}`]: theme.green,
+      [`orange${style}`]: theme.orange,
+      [`magenta${style}`]: theme.magenta,
+    };
   }
 
   console.log(randomNumber);
