@@ -97,35 +97,12 @@ function App() {
           </div>
           <div key={randomNumber} className="mainContent">
             {data[randomNumber]["back"].map((ele, id) => (
-              <div key={`${id}-${randomNumber}`}>
-                {ele.type === "word" && (
-                  <>
-                    <h1 className="word">{ele.content}</h1>
-                  </>
-                )}
-                {ele.type === "text" && (
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: ele.content.replace(
-                        "<strong>",
-                        `<strong class=${classNames(getStyle("font"))}>`
-                      ),
-                    }}
-                    className="wordDefinition"
-                  />
-                )}
-                {ele.type === "example" && (
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: ele.content.replace(
-                        "<strong>",
-                        `<strong class=${classNames(getStyle("font"))}>`
-                      ),
-                    }}
-                    className="wordExample"
-                  />
-                )}
-              </div>
+              <Content
+                ele={ele}
+                id={id}
+                randomNumber={randomNumber}
+                getStyle={getStyle}
+              />
             ))}
           </div>
         </div>
@@ -140,5 +117,37 @@ function App() {
     </div>
   );
 }
+
+const Content = ({ ele, id, randomNumber, getStyle }) => (
+  <div key={`${id}-${randomNumber}`}>
+    {ele.type === "word" && (
+      <>
+        <h1 className="word">{ele.content}</h1>
+      </>
+    )}
+    {ele.type === "text" && (
+      <p
+        dangerouslySetInnerHTML={{
+          __html: ele.content.replace(
+            "<strong>",
+            `<strong class=${classNames(getStyle("font"))}>`
+          ),
+        }}
+        className="wordDefinition"
+      />
+    )}
+    {ele.type === "example" && (
+      <p
+        dangerouslySetInnerHTML={{
+          __html: ele.content.replace(
+            "<strong>",
+            `<strong class=${classNames(getStyle("font"))}>`
+          ),
+        }}
+        className="wordExample"
+      />
+    )}
+  </div>
+);
 
 export default App;
