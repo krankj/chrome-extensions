@@ -47,6 +47,7 @@ function App() {
     green: 1,
     orange: 0,
     magenta: 0,
+    yellow: 0,
   };
   const [theme, setTheme] = useState(themeOptions);
   const firstRender = useRef(true);
@@ -80,16 +81,17 @@ function App() {
     const switchesArr = toggleNext(switchPos);
     let length = switchesArr.length;
     const themeOptions = {
-      green: switchesArr[length - 3],
-      orange: switchesArr[length - 2],
-      magenta: switchesArr[length - 1],
+      green: switchesArr[length - 4],
+      orange: switchesArr[length - 3],
+      magenta: switchesArr[length - 2],
+      yellow: switchesArr[length - 1],
     };
     setTheme(themeOptions);
   }, [switchPos]);
 
   const handleColorChange = () => {
     if (switchPos === 1) {
-      setSwitchPos(4);
+      setSwitchPos(8);
     } else {
       setSwitchPos(switchPos >> 1);
     }
@@ -121,6 +123,7 @@ function App() {
       [`green${style}`]: theme.green,
       [`orange${style}`]: theme.orange,
       [`magenta${style}`]: theme.magenta,
+      [`yellow${style}`]: theme.yellow,
     };
   }
 
