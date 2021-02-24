@@ -65,7 +65,24 @@ function App() {
   };
 
   const takescreenshotAndSave = () => {
-    html2canvas(document.querySelector(".card")).then((canvas) => {
+    html2canvas(document.querySelector(".card"), {
+      onclone: function (clonedDoc) {
+        let app = clonedDoc.querySelector(".app");
+        let mainContent = clonedDoc.querySelector(".mainContent");
+        let card = clonedDoc.querySelector(".card");
+        let header = clonedDoc.querySelector(".header");
+        let word = clonedDoc.querySelector(".word");
+        let wordDefinition = clonedDoc.querySelector(".wordDefinition");
+        let wordExample = clonedDoc.querySelector(".wordExample");
+        mainContent.style.animation = "none";
+        // card.style.maxWidth = "900px";
+        // card.style.minHeight = "900px";
+        // header.style.fontSize = "1.1rem";
+        // word.style.fontSize = "6.5rem";
+        // wordDefinition.style.fontSize = "2.8rem";
+        // wordExample.style.fontSize = "2.1rem";
+      },
+    }).then((canvas) => {
       setDataUrl(canvas.toDataURL("image/jpeg"));
     });
   };
