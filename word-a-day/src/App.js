@@ -69,11 +69,11 @@ function App() {
       onclone: function (clonedDoc) {
         let app = clonedDoc.querySelector(".app");
         let mainContent = clonedDoc.querySelector(".mainContent");
-        let card = clonedDoc.querySelector(".card");
-        let header = clonedDoc.querySelector(".header");
-        let word = clonedDoc.querySelector(".word");
-        let wordDefinition = clonedDoc.querySelector(".wordDefinition");
-        let wordExample = clonedDoc.querySelector(".wordExample");
+        // let card = clonedDoc.querySelector(".card");
+        // let header = clonedDoc.querySelector(".header");
+        // let word = clonedDoc.querySelector(".word");
+        // let wordDefinition = clonedDoc.querySelector(".wordDefinition");
+        // let wordExample = clonedDoc.querySelector(".wordExample");
         mainContent.style.animation = "none";
         // card.style.maxWidth = "900px";
         // card.style.minHeight = "900px";
