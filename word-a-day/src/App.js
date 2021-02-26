@@ -42,7 +42,7 @@ function App() {
   const [fileName, setFileName] = useState(
     `NWD-${date.format(new Date(), datePattern)}.jpg`
   );
-  const [switchPos, setSwitchPos] = useState(4);
+  const [switchPos, setSwitchPos] = useState(8);
   const themeOptions = {
     green: 1,
     orange: 0,
@@ -60,7 +60,11 @@ function App() {
     downloadImage(dataUrl);
   }, [dataUrl]);
 
-  const handleNewWordClick = () => {
+  useEffect(() => {
+    console.log(randomNumber);
+  }, [randomNumber]);
+
+  const handleNewWord = () => {
     setRandomNumber(randomNumberGenerator(DATA_SIZE));
   };
 
@@ -107,21 +111,27 @@ function App() {
   }, [switchPos]);
 
   const handleColorChange = () => {
-    if (switchPos === 1) {
-      setSwitchPos(8);
-    } else {
-      setSwitchPos(switchPos >> 1);
-    }
+    setSwitchPos((prev) => {
+      let newPos = prev >> 1;
+      if (newPos === 0) {
+        newPos = 8;
+      }
+      return newPos;
+    });
   };
 
-  React.useEffect(() => {
-    function handleSpaceKey(e) {
-      if (e.key === " ") {
-        setRandomNumber(randomNumberGenerator(DATA_SIZE));
+  useEffect(() => {
+    function handleKeyUp(e) {
+      e.preventDefault(); //prevent space bar from acting as a click on the focued element.
+      if (e.key === "r") {
+        handleNewWord();
+      }
+      if (e.key === "t") {
+        handleColorChange();
       }
     }
-    window.addEventListener("keyup", handleSpaceKey);
-    return () => window.removeEventListener("keyup", handleSpaceKey);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => window.removeEventListener("keyup", handleKeyUp);
   }, []);
 
   const capitalize = (word) => {
@@ -144,8 +154,6 @@ function App() {
     };
   }
 
-  console.log(randomNumber);
-
   return (
     <div className="container">
       <div className="app">
@@ -155,6 +163,7 @@ function App() {
           })}
         >
           <Header getStyle={getStyle} />
+          {/* Key is required to re-mount the component so that the animation is applied */}
           <div key={randomNumber} className="mainContent">
             {data[randomNumber]["back"].map((ele, id) => (
               <Content
@@ -168,9 +177,7 @@ function App() {
           </div>
         </div>
         <div className={classNames("controls", theme)}>
-          <button className="newWordButton" onClick={handleNewWordClick}>
-            Refresh
-          </button>
+          <button onClick={handleNewWord}>Refresh</button>
           <button onClick={handleColorChange}>Toggle color</button>
           <button onClick={takescreenshotAndSave}>Save word</button>
         </div>

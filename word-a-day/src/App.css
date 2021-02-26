@@ -98,7 +98,7 @@ strong {
 
 .wordDefinition {
   font-family: "Sadhguru Thin";
-  font-size: calc(1rem + 1vw);
+  font-size: calc(0.8rem + 1vw);
 }
 
 .wordExample {
