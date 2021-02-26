@@ -2,7 +2,8 @@ const express = require("express");
 const quotesRouter = express.Router();
 const QuotesController = require("../controllers/quotes");
 
-authRouter.get("/today", [QuotesController.today]);
-authRouter.get("/range", [AuthController.range]);
+quotesRouter.get("/today", [QuotesController.today]);
+quotesRouter.get("/range", [QuotesController.range]);
+quotesRouter.post("/add", [QuotesController.insert]);
 
 module.exports = quotesRouter;

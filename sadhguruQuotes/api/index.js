@@ -12,6 +12,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 const apiRouter = express.Router();
 app.use("/api", apiRouter);
-apiRouter.use("/quote", QuotesRoute);
+apiRouter.use("/quotes", QuotesRoute);
 
 app.listen(port, () => logger.info(`Listening on port ${port}`));

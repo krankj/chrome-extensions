@@ -1,4 +1,5 @@
 const mongoose = require("../services/mongoose.service").mongoose;
+const beautifyUnique = require("mongoose-beautiful-unique-validation");
 
 let { Schema } = mongoose;
 const opts = {
@@ -12,19 +13,34 @@ const opts = {
     },
   },
   timestamps: true,
-  setDefaultsOnInsert: true,
+  //setDefaultsOnInsert: true, // not really sure if this field is required, since I checked that it works fine even without it.
 };
 
 let quoteSchema = new Schema(
   {
-    quote: { type: String, unique: false, required: true },
+    quote: {
+      type: String,
+    },
     category: { type: String, default: "WELLBEING" },
-    imageLink: { type: String, default: "https://www.google.com" },
-    twitterLink: { type: String, unique: false, required: true },
-    publishedDate: { type: Date, unique: false, required: true },
+    imageLink: {
+      type: String,
+      default:
+        "https://pbs.twimg.com/profile_images/1132191777195085824/KbxIQUxJ_400x400.png",
+    },
+    twitterLink: {
+      type: String,
+      unique: "A duplicate link already exists ({VALUE})",
+    },
+    publishedDate: {
+      type: Date,
+      unique: "A quote for this date already exists ({VALUE})",
+    },
   },
   opts
 );
+quoteSchema.plugin(beautifyUnique);
+
+//quoteSchema.index({ quote: 1 }, { unique: true });
 
 let Quote = mongoose.model("Quote", quoteSchema);
 
