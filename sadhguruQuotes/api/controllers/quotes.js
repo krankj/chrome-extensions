@@ -11,8 +11,18 @@ const schema = Joi.object({
   twitterLink: Joi.string(),
 });
 
-exports.today = (req, res) => {
-  return res.status(200).send({ message: "ok" });
+exports.today = async (req, res) => {
+  try {
+    const today = new Date().toISOString().split("T")[0];
+    const quote = await QuoteModel.findByDate(today);
+    if (quote) return res.status(200).send({ found: true, data: quote });
+    else
+      return res
+        .status(200)
+        .send({ found: false, data: "No quotes found for today" });
+  } catch (e) {
+    return res.status(500).send({ error: "Internal error" + e });
+  }
 };
 
 exports.range = (req, res) => {};
