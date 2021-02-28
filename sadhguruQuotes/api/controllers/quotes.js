@@ -39,9 +39,18 @@ exports.manualAdd = async (req, res) => {
   }
 };
 
-async function getQuoteFromTwitter() {
+async function getQuotesFromTwitter(pastDays) {
+  const today = new Date();
+  today.setDate(today.getDate() - pastDays);
   try {
-    const response = await twitterSearchApi().get();
+    const response = await twitterSearchApi.get("", {
+      params: {
+        start_time: today,
+        "tweet.fields": "author_id,created_at,public_metrics,source",
+        expansions: "attachments.media_keys",
+        "media.fields": "url,height,width",
+      },
+    });
     const mainData = response.data.data;
     const includes = response.data.includes.media;
     return mainData.map((element) => {
@@ -54,7 +63,6 @@ async function getQuoteFromTwitter() {
 
       const quoteObj = {
         quote: text,
-        category: "",
         twitterLink: link,
         imageLink: found.url || "Not found",
         publishedDate: element.created_at.split("T")[0],
@@ -67,11 +75,25 @@ async function getQuoteFromTwitter() {
 }
 
 exports.autoAdd = async (req, res) => {
-  const quotes = await getQuoteFromTwitter();
+  const last = req.query.last;
+  if (last > 7 || last < 1) {
+    return res.status(400).send({ message: "Bad query parameter" });
+  }
+  const quotes = await getQuotesFromTwitter(last);
   try {
-    const quote = await QuoteModel.insert(quoteObj);
-    return res.status(200).send({ data: quote });
+    await QuoteModel.insertMany(quotes);
+    return res.status(200).send({ message: "Done" });
   } catch (e) {
-    return res.status(500).send({ error: "Error occurred: " + e });
+    let failedCount = e.writeErrors.length;
+    if (last - failedCount === 0) {
+      return res
+        .status(500)
+        .send({ error: "Could not insert any of the quotes: " + e });
+    } else {
+      return res.status(206).send({
+        error: "Few documents' insertion failed",
+        failedDocs: failedCount,
+      });
+    }
   }
 };

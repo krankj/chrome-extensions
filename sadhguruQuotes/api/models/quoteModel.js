@@ -27,13 +27,13 @@ let quoteSchema = new Schema(
       default:
         "https://pbs.twimg.com/profile_images/1132191777195085824/KbxIQUxJ_400x400.png",
     },
-    twitterLink: {
-      type: String,
-      unique: "A duplicate link already exists ({VALUE})",
-    },
     publishedDate: {
       type: Date,
       unique: "A quote for this date already exists ({VALUE})",
+    },
+    twitterLink: {
+      type: String,
+      unique: "A duplicate link already exists ({VALUE})",
     },
   },
   opts
@@ -47,6 +47,10 @@ let Quote = mongoose.model("Quote", quoteSchema);
 exports.insert = (quoteData) => {
   let quote = new Quote(quoteData);
   return quote.save();
+};
+
+exports.insertMany = (quoteArray) => {
+  return Quote.insertMany(quoteArray, { ordered: false });
 };
 
 exports.delete = (quoteId) => {
