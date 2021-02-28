@@ -2,6 +2,11 @@ import React, { useEffect, useReducer } from "react";
 import "./App.css";
 import QuoteCard from "./QuoteCard";
 import axios from "axios";
+import ordinal from "date-and-time/plugin/ordinal";
+import date from "date-and-time";
+
+date.plugin(ordinal);
+const datePattern = date.compile("MMMM DDD, YYYY");
 
 const quoteReducer = (state, action) => {
   switch (action.type) {
@@ -46,7 +51,10 @@ function App() {
     <div className="container">
       <div className="app">
         <QuoteCard
-          publishedDate={quote.publishedDate}
+          publishedDate={date.format(
+            new Date(quote.publishedDate),
+            datePattern
+          )}
           quoteImage={quote.quoteImage}
         >
           {quote.text}
