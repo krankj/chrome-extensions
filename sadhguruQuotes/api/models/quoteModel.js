@@ -22,11 +22,7 @@ let quoteSchema = new Schema(
       type: String,
     },
     category: { type: String, default: "WELLBEING" },
-    imageLink: {
-      type: String,
-      default:
-        "https://pbs.twimg.com/profile_images/1132191777195085824/KbxIQUxJ_400x400.png",
-    },
+    imageLink: { type: String, default: "" }, //use default https://pbs.twimg.com/profile_images/1132191777195085824/KbxIQUxJ_400x400.png if needed
     publishedDate: {
       type: Date,
       unique: "A quote for this date already exists ({VALUE})",

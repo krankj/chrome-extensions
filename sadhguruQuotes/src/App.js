@@ -40,7 +40,7 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:9000/api/quotes/today")
+      .get("https://sadhguru-backend.vercel.app/api/quotes/today")
       .then((response) =>
         dispatchQuotes({ type: "SUCCESS", payload: response.data.data })
       )
