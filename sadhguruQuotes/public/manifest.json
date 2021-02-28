@@ -13,7 +13,8 @@
     "default_icon": "sg-icon.png"
   },
   "permissions": [
-    "tabs"
+    "tabs",
+    "storage"
   ],
   "commands": {
     "_execute_action": {

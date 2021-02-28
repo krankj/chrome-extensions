@@ -13,13 +13,13 @@ const quoteReducer = (state, action) => {
     case "INIT":
       return { ...state, isLoading: true, isError: false };
     case "SAVE":
-      return { ...state, data: action.payload, isLoading: false };
+      return { ...state, isLoading: false };
     case "SUCCESS":
       return {
         ...state,
-        text: action.payload.quote,
+        quote: action.payload.quote,
         publishedDate: action.payload.publishedDate,
-        quoteImage: action.payload.imageLink,
+        imageLink: action.payload.imageLink,
         isLoading: false,
       };
     case "FAILED":
@@ -29,21 +29,45 @@ const quoteReducer = (state, action) => {
   }
 };
 
+const quoteInit = {
+  quote: "Loading...",
+  publishedDate: "2021-02-28",
+  imageLink: "",
+};
+
+const QUOTE_KEY = "sg-quote";
+
 function App() {
-  const [quote, dispatchQuotes] = useReducer(quoteReducer, {
-    text: "",
-    publishedDate: "",
-    quoteImage: "",
-    isLoading: false,
-    isError: false,
-  });
+  const storedQuote = () => localStorage.getItem(QUOTE_KEY);
+
+  const [quote, dispatchQuotes] = useReducer(
+    quoteReducer,
+    storedQuote() || quoteInit
+  );
 
   useEffect(() => {
+    console.log("Biggest quote is", quote);
+  }, [quote]);
+
+  useEffect(() => {
+    const quoteObject = storedQuote();
+    if (quoteObject) {
+      setTimeout(
+        () =>
+          dispatchQuotes({ type: "SUCCESS", payload: JSON.parse(quoteObject) }),
+        5000
+      );
+      return;
+    }
     axios
       .get("https://sadhguru-backend.vercel.app/api/quotes/today")
-      .then((response) =>
-        dispatchQuotes({ type: "SUCCESS", payload: response.data.data })
-      )
+      .then((response) => {
+        localStorage.setItem(
+          QUOTE_KEY,
+          JSON.parseJSON.stringify(response.data.data)
+        );
+        dispatchQuotes({ type: "SUCCESS", payload: response.data.data });
+      })
       .catch((e) => dispatchQuotes({ type: "FAILED" }));
   }, []);
 
@@ -55,9 +79,9 @@ function App() {
             new Date(quote.publishedDate),
             datePattern
           )}
-          quoteImage={quote.quoteImage}
+          quoteImage={quote.imageLink}
         >
-          {quote.text}
+          {quote.quote}
         </QuoteCard>
       </div>
     </div>

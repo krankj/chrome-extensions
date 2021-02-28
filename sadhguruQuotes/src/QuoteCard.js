@@ -1,4 +1,4 @@
-import React, { Children } from "react";
+import React from "react";
 // import axios from "axios";
 import sgSignature from "./assets/sg_signature.png";
 import SadhguruDefaultImage from "./assets/sadhguru.jpg";
