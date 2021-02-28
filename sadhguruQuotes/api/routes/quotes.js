@@ -4,6 +4,7 @@ const QuotesController = require("../controllers/quotes");
 
 quotesRouter.get("/today", [QuotesController.today]);
 quotesRouter.get("/range", [QuotesController.range]);
-quotesRouter.post("/add", [QuotesController.insert]);
+quotesRouter.post("/manualAdd", [QuotesController.manualAdd]);
+quotesRouter.post("/autoAdd", [QuotesController.autoAdd]);
 
 module.exports = quotesRouter;
