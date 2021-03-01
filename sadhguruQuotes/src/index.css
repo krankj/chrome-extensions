@@ -32,7 +32,9 @@ html {
 
 body {
   margin: 0;
-  background: #fffbf2;
+  /* background: #fffbf2; */
+  background: url("./assets/bg.png");
+  background-size: cover;
   font-family: "Sadhguru Med", "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
     "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;

@@ -38,7 +38,7 @@ const quoteInit = {
 const QUOTE_KEY = "sg-quote";
 
 function App() {
-  const storedQuote = () => localStorage.getItem(QUOTE_KEY);
+  const storedQuote = () => JSON.parse(localStorage.getItem(QUOTE_KEY));
 
   const [quote, dispatchQuotes] = useReducer(
     quoteReducer,
@@ -52,33 +52,34 @@ function App() {
   useEffect(() => {
     const quoteObject = storedQuote();
     if (quoteObject) {
-      setTimeout(
-        () =>
-          dispatchQuotes({ type: "SUCCESS", payload: JSON.parse(quoteObject) }),
-        5000
-      );
+      setTimeout(() => {
+        return dispatchQuotes({
+          type: "SUCCESS",
+          payload: quoteObject,
+        });
+      }, 5000);
       return;
     }
     axios
       .get("https://sadhguru-backend.vercel.app/api/quotes/today")
       .then((response) => {
-        localStorage.setItem(
-          QUOTE_KEY,
-          JSON.parseJSON.stringify(response.data.data)
-        );
+        localStorage.setItem(QUOTE_KEY, JSON.stringify(response.data.data));
         dispatchQuotes({ type: "SUCCESS", payload: response.data.data });
       })
-      .catch((e) => dispatchQuotes({ type: "FAILED" }));
+      .catch((e) => {
+        console.error("Error is", e);
+        dispatchQuotes({ type: "FAILED" });
+      });
   }, []);
 
+  const publishedDate = new Date(quote.publishedDate);
+  const offset = publishedDate.getTimezoneOffset() / 60;
+  publishedDate.setHours(publishedDate.getHours() + offset);
   return (
     <div className="container">
       <div className="app">
         <QuoteCard
-          publishedDate={date.format(
-            new Date(quote.publishedDate),
-            datePattern
-          )}
+          publishedDate={date.format(publishedDate, datePattern)}
           quoteImage={quote.imageLink}
         >
           {quote.quote}
