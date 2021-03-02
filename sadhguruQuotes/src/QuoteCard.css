@@ -8,6 +8,7 @@
   font-size: calc(10px + 2vmin);
   color: rgb(138, 70, 6);
   text-align: center;
+  animation: fadein 700ms;
 }
 
 .quoteDate {
@@ -25,8 +26,19 @@
   margin: 2rem 0 0 0;
 }
 
+.signatureBox {
+  display: flex;
+  flex-direction: column;
+}
+
 .sg-signature {
-  height: 60px;
+  object-fit: contain;
+  height: 70px;
+}
+
+.sg-underline {
+  margin-top: 20px;
+  width: 220px;
 }
 
 @media screen and (max-width: 600px) {
@@ -38,5 +50,14 @@
   }
   .sg-signature {
     height: 45px;
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

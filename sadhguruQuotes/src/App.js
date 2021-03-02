@@ -8,10 +8,18 @@ import date from "date-and-time";
 date.plugin(ordinal);
 const datePattern = date.compile("MMMM DDD, YYYY");
 
+const quoteInit = {
+  quote: "",
+  publishedDate: "",
+  imageLink: "",
+  isLoading: true,
+  isError: false,
+};
+
 const quoteReducer = (state, action) => {
   switch (action.type) {
     case "INIT":
-      return { ...state, isLoading: true, isError: false };
+      return quoteInit;
     case "SAVE":
       return { ...state, isLoading: false };
     case "SUCCESS":
@@ -29,60 +37,62 @@ const quoteReducer = (state, action) => {
   }
 };
 
-const quoteInit = {
-  quote: "Loading...",
-  publishedDate: "2021-02-28",
-  imageLink: "",
-};
-
 const QUOTE_KEY = "sg-quote";
 
 function App() {
   const storedQuote = () => JSON.parse(localStorage.getItem(QUOTE_KEY));
-
   const [quote, dispatchQuotes] = useReducer(
     quoteReducer,
     storedQuote() || quoteInit
   );
 
   useEffect(() => {
-    console.log("Biggest quote is", quote);
+    console.log("Changing quotes");
   }, [quote]);
 
   useEffect(() => {
-    const quoteObject = storedQuote();
-    if (quoteObject) {
-      setTimeout(() => {
-        return dispatchQuotes({
-          type: "SUCCESS",
-          payload: quoteObject,
-        });
-      }, 5000);
-      return;
+    if (quote.isLoading) {
+      setTimeout(
+        () =>
+          axios
+            .get("https://sadhguru-backend.vercel.app/api/quotes/today")
+            .then((response) => {
+              // localStorage.setItem(
+              //   QUOTE_KEY,
+              //   JSON.stringify(response.data.data)
+              // );
+              dispatchQuotes({ type: "SUCCESS", payload: response.data.data });
+            })
+            .catch((e) => {
+              console.error("Error is", e);
+              dispatchQuotes({ type: "FAILED" });
+            }),
+        5000
+      );
     }
-    axios
-      .get("https://sadhguru-backend.vercel.app/api/quotes/today")
-      .then((response) => {
-        localStorage.setItem(QUOTE_KEY, JSON.stringify(response.data.data));
-        dispatchQuotes({ type: "SUCCESS", payload: response.data.data });
-      })
-      .catch((e) => {
-        console.error("Error is", e);
-        dispatchQuotes({ type: "FAILED" });
-      });
-  }, []);
+  }, [quote.isLoading]);
 
-  const publishedDate = new Date(quote.publishedDate);
-  const offset = publishedDate.getTimezoneOffset() / 60;
-  publishedDate.setHours(publishedDate.getHours() + offset);
+  const getPublishdedDate = () => {
+    if (quote.isLoading) return "Please wait";
+    if (quote.isError)
+      return "Something went wrong, but hey is there somehting like that?";
+    const publishedDate = new Date(quote.publishedDate);
+    const offset = publishedDate.getTimezoneOffset() / 60;
+    publishedDate.setHours(publishedDate.getHours() + offset);
+    return date.format(publishedDate, datePattern);
+  };
+
   return (
     <div className="container">
       <div className="app">
         <QuoteCard
-          publishedDate={date.format(publishedDate, datePattern)}
+          key={quote.quote}
+          publishedDate={getPublishdedDate()}
           quoteImage={quote.imageLink}
         >
-          {quote.quote}
+          {quote.isLoading ? "Loading..." : quote.quote}
+          {quote.isError &&
+            "There is nothing wrong or right. It's just something pleasant or unplesant that has occurred. Hold tight while I make it plesant"}
         </QuoteCard>
       </div>
     </div>

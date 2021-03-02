@@ -1,6 +1,8 @@
 import React from "react";
 // import axios from "axios";
 import sgSignature from "./assets/sg_signature.png";
+import sgUnderline from "./assets/quote-beneath.png";
+
 import SadhguruDefaultImage from "./assets/sadhguru.jpg";
 import "./QuoteCard.css";
 
@@ -25,10 +27,17 @@ const QuoteCard = ({ publishedDate, quoteImage, children }) => {
       />
       <div className="quoteTextContainer">
         <p className="quoteText">{children}</p>
+      </div>
+      <div className="signatureBox">
         <img
           className="sg-signature"
           src={sgSignature}
           alt="Sadhguru Signature"
+        />
+        <img
+          className="sg-underline"
+          src={sgUnderline}
+          alt="Sadhguru Underline"
         />
       </div>
     </div>
