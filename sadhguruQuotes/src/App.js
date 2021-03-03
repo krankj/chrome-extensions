@@ -78,25 +78,21 @@ function App() {
   useEffect(() => {
     if (quote.isLoading) {
       console.log("< Fetching new quote >");
-      setTimeout(
-        () =>
-          authAxios
-            .get("/api/quotes/latest")
-            .then((response) => {
-              if (response.data.found) {
-                storeLocally(QUOTE_KEY, response.data.data);
-                dispatchQuotes({
-                  type: "SUCCESS",
-                  payload: response.data.data,
-                });
-              }
-            })
-            .catch((e) => {
-              console.error("Error is", e);
-              dispatchQuotes({ type: "FAILED" });
-            }),
-        2000
-      );
+      authAxios
+        .get("/api/quotes/latest")
+        .then((response) => {
+          if (response.data.found) {
+            storeLocally(QUOTE_KEY, response.data.data);
+            dispatchQuotes({
+              type: "SUCCESS",
+              payload: response.data.data,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error("Error is", e);
+          dispatchQuotes({ type: "FAILED" });
+        });
     }
   }, [quote.isLoading]);
 
