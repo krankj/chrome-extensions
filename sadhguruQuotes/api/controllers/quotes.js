@@ -12,15 +12,11 @@ const schema = Joi.object({
   twitterLink: Joi.string(),
 });
 
-exports.today = async (req, res) => {
+exports.latest = async (req, res) => {
   try {
-    const today = new Date().toISOString().split("T")[0];
-    const quote = await QuoteModel.findByDate(today);
+    const quote = await QuoteModel.findLatest();
     if (quote) return res.status(200).send({ found: true, data: quote });
-    else
-      return res
-        .status(200)
-        .send({ found: false, data: "No quotes found for today" });
+    else return res.status(404).send({ found: false, data: "No quotes found" });
   } catch (e) {
     return res.status(500).send({ error: "Internal error" + e });
   }
@@ -76,18 +72,27 @@ async function getQuotesFromTwitter(pastDays) {
 
 exports.autoAdd = async (req, res) => {
   const last = req.query.last;
+  if (!last) return res.status(400).send({ message: "No last date mentioned" });
+
   if (last > 7 || last < 1) {
     return res.status(400).send({ message: "Bad query parameter" });
   }
   const quotes = await getQuotesFromTwitter(last);
+  console.log("Quotes are", quotes);
   try {
-    await QuoteModel.insertMany(quotes);
-    return res.status(200).send({ message: "Done" });
+    if (quotes) {
+      await QuoteModel.insertMany(quotes);
+      return res.status(200).send({ message: "Done" });
+    } else {
+      return res
+        .status(500)
+        .send({ message: "No quotes could be fetched from twitter" });
+    }
   } catch (e) {
     let failedCount = e.writeErrors.length;
     if (last - failedCount === 0) {
       return res
-        .status(500)
+        .status(409)
         .send({ error: "Could not insert any of the quotes: " + e });
     } else {
       return res.status(206).send({

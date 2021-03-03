@@ -58,6 +58,10 @@ exports.delete = (quoteId) => {
   });
 };
 
+exports.findLatest = (value) => {
+  return Quote.findOne().sort({ publishedDate: -1 });
+};
+
 exports.findByDate = (value) => {
   return Quote.findOne({ publishedDate: value });
 };

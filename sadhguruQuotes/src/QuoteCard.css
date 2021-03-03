@@ -13,7 +13,7 @@
 
 .quoteDate {
   font-family: "Sadhguru Thin";
-  font-size: 1.2rem;
+  font-size: calc(6px + 1.5vmin);
 }
 
 .sg-image {
@@ -41,15 +41,24 @@
   width: 220px;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 1600px) {
   .sg-image {
-    height: 200px;
-  }
-  .quoteText {
-    font-size: 1.3rem;
+    height: 300px;
   }
   .sg-signature {
     height: 45px;
+  }
+  .sg-underline {
+    width: 120px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .quoteCard {
+    padding: 0 24px;
+  }
+  .sg-image {
+    height: 200px;
   }
 }
 

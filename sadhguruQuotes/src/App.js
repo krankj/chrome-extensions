@@ -1,9 +1,9 @@
 import React, { useEffect, useReducer } from "react";
 import "./App.css";
 import QuoteCard from "./QuoteCard";
-import axios from "axios";
 import ordinal from "date-and-time/plugin/ordinal";
 import date from "date-and-time";
+import authAxios from "./utils/auth";
 
 date.plugin(ordinal);
 const datePattern = date.compile("MMMM DDD, YYYY");
@@ -12,14 +12,14 @@ const quoteInit = {
   quote: "",
   publishedDate: "",
   imageLink: "",
-  isLoading: true,
+  isLoading: false,
   isError: false,
 };
 
 const quoteReducer = (state, action) => {
   switch (action.type) {
     case "INIT":
-      return quoteInit;
+      return { ...state, isLoading: true };
     case "SAVE":
       return { ...state, isLoading: false };
     case "SUCCESS":
@@ -39,43 +39,69 @@ const quoteReducer = (state, action) => {
 
 const QUOTE_KEY = "sg-quote";
 
+function storeLocally(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
 function App() {
   const storedQuote = () => JSON.parse(localStorage.getItem(QUOTE_KEY));
-  const [quote, dispatchQuotes] = useReducer(
-    quoteReducer,
-    storedQuote() || quoteInit
-  );
+  const [quote, dispatchQuotes] = useReducer(quoteReducer, quoteInit);
 
   useEffect(() => {
-    console.log("Changing quotes");
-  }, [quote]);
+    //check if quote is outdated and if there exists new quote for today
+    const storedQuoteObj = storedQuote();
+    const today = new Date();
+    const offset = today.getTimezoneOffset() / 60;
+    // today.setHours(today.getHours() + offset);
+    if (storedQuoteObj) {
+      const publishedDate = new Date(storedQuote().publishedDate);
+      publishedDate.setHours(publishedDate.getHours() + offset);
+      console.log("Published date", publishedDate);
+      console.log("Today", today);
+
+      if (publishedDate) {
+        if (today > publishedDate) {
+          authAxios
+            .post("/api/quotes/autoAdd", null, { params: { last: 1 } })
+            .then(() => console.log("Triggered auto fetch"))
+            .catch((e) => console.error("Error occurred", e));
+        } else {
+          dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
+        }
+        return;
+      }
+    }
+    dispatchQuotes({ type: "INIT" });
+  }, []);
 
   useEffect(() => {
     if (quote.isLoading) {
+      console.log(" I am connecting to the backend");
       setTimeout(
         () =>
-          axios
-            .get("https://sadhguru-backend.vercel.app/api/quotes/today")
+          authAxios
+            .get("/api/quotes/latest")
             .then((response) => {
-              // localStorage.setItem(
-              //   QUOTE_KEY,
-              //   JSON.stringify(response.data.data)
-              // );
-              dispatchQuotes({ type: "SUCCESS", payload: response.data.data });
+              if (response.data.found) {
+                storeLocally(QUOTE_KEY, response.data.data);
+                dispatchQuotes({
+                  type: "SUCCESS",
+                  payload: response.data.data,
+                });
+              }
             })
             .catch((e) => {
               console.error("Error is", e);
               dispatchQuotes({ type: "FAILED" });
             }),
-        5000
+        2000
       );
     }
   }, [quote.isLoading]);
 
   const getPublishdedDate = () => {
-    if (quote.isLoading) return "Please wait";
-    if (quote.isError)
-      return "Something went wrong, but hey is there somehting like that?";
+    if (quote.isLoading) return "Please wait...";
+    if (quote.isError) return "Infinity";
     const publishedDate = new Date(quote.publishedDate);
     const offset = publishedDate.getTimezoneOffset() / 60;
     publishedDate.setHours(publishedDate.getHours() + offset);
@@ -92,7 +118,7 @@ function App() {
         >
           {quote.isLoading ? "Loading..." : quote.quote}
           {quote.isError &&
-            "There is nothing wrong or right. It's just something pleasant or unplesant that has occurred. Hold tight while I make it plesant"}
+            "There is nothing wrong or right. It's just something pleasant or unplesant that has occurred. Hold tight while I make it pleasant"}
         </QuoteCard>
       </div>
     </div>
