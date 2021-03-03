@@ -61,7 +61,7 @@ async function getQuotesFromTwitter(pastDays) {
         quote: text,
         twitterLink: link,
         imageLink: found.url || "Not found",
-        publishedDate: element.created_at.split("T")[0],
+        publishedDate: element.created_at,
       };
       return quoteObj;
     });
@@ -78,7 +78,6 @@ exports.autoAdd = async (req, res) => {
     return res.status(400).send({ message: "Bad query parameter" });
   }
   const quotes = await getQuotesFromTwitter(last);
-  console.log("Quotes are", quotes);
   try {
     if (quotes) {
       await QuoteModel.insertMany(quotes);

@@ -18,7 +18,7 @@ const quoteInit = {
 
 const quoteReducer = (state, action) => {
   switch (action.type) {
-    case "INIT":
+    case "INIT_FETCH":
       return { ...state, isLoading: true };
     case "SAVE":
       return { ...state, isLoading: false };
@@ -52,31 +52,32 @@ function App() {
     const storedQuoteObj = storedQuote();
     const today = new Date();
     const offset = today.getTimezoneOffset() / 60;
-    // today.setHours(today.getHours() + offset);
+    today.setHours(today.getHours() + offset);
     if (storedQuoteObj) {
-      const publishedDate = new Date(storedQuote().publishedDate);
-      publishedDate.setHours(publishedDate.getHours() + offset);
-      console.log("Published date", publishedDate);
-      console.log("Today", today);
-
-      if (publishedDate) {
-        if (today > publishedDate) {
+      const nextTriggerDate = new Date(storedQuote().publishedDate);
+      nextTriggerDate.setHours(nextTriggerDate.getHours() + offset + 24); // 24 is added so that 1 day post the previous published date, we start triggering the auto add api
+      //Tweets are posted exactly at 2:45 GMT. 2nd March 2:45 GMT tweet posted. Now it is, 2nd March 2:00 GMT ( or 6PM PST ). Current recorded tweet is 1st March 2:45 GMT.
+      if (nextTriggerDate) {
+        if (today.valueOf() > nextTriggerDate.valueOf()) {
           authAxios
             .post("/api/quotes/autoAdd", null, { params: { last: 1 } })
-            .then(() => console.log("Triggered auto fetch"))
-            .catch((e) => console.error("Error occurred", e));
+            .catch((e) => console.error("Error occurred", e))
+            .finally(() => {
+              console.log("< Triggered auto add >");
+              dispatchQuotes({ type: "INIT_FETCH" });
+            });
         } else {
           dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
         }
         return;
       }
     }
-    dispatchQuotes({ type: "INIT" });
+    dispatchQuotes({ type: "INIT_FETCH" });
   }, []);
 
   useEffect(() => {
     if (quote.isLoading) {
-      console.log(" I am connecting to the backend");
+      console.log("< Fetching new quote >");
       setTimeout(
         () =>
           authAxios
