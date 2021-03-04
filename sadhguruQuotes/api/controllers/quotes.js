@@ -37,7 +37,9 @@ exports.manualAdd = async (req, res) => {
 
 async function getQuotesFromTwitter(pastDays) {
   const today = new Date();
+  const offset = today.getTimezoneOffset() / 60;
   today.setDate(today.getDate() - pastDays);
+  today.setHours(today.getHours() + offset);
   try {
     const response = await twitterSearchApi.get("", {
       params: {
@@ -66,7 +68,11 @@ async function getQuotesFromTwitter(pastDays) {
       return quoteObj;
     });
   } catch (error) {
-    logger.error("Error occurred while contacting twitter api.", error);
+    if (error.response.status === 400) {
+      logger.error("Bad request was made to twitter api");
+    } else {
+      logger.error("Error occurred while contacting twitter api.", error);
+    }
   }
 }
 
@@ -77,8 +83,8 @@ exports.autoAdd = async (req, res) => {
   if (last > 7 || last < 1) {
     return res.status(400).send({ message: "Bad query parameter" });
   }
-  const quotes = await getQuotesFromTwitter(last);
   try {
+    const quotes = await getQuotesFromTwitter(last);
     if (quotes) {
       await QuoteModel.insertMany(quotes);
       return res.status(200).send({ message: "Done" });
