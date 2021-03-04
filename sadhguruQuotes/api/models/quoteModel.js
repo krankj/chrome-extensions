@@ -63,7 +63,9 @@ exports.findLatest = () => {
 };
 
 exports.findByDate = (value) => {
-  return Quote.findOne({ publishedDate: value });
+  const nextDay = new Date(value);
+  nextDay.setDate(nextDay.getDate() + 1);
+  return Quote.findOne({ publishedDate: { $gte: value, $lt: nextDay } });
 };
 
 exports.findByCategory = (value) => {

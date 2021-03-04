@@ -51,31 +51,42 @@ function App() {
     //check if quote is outdated and if there exists new quote for today
     const storedQuoteObj = storedQuote();
     const today = new Date();
+    function validateAndTriggerAutoAdd(today) {
+      authAxios
+        .get("/api/quotes/exists", {
+          params: { date: today.toISOString().split("T")[0] },
+        })
+        .then(() => {
+          console.log("< Latest quote already exists >");
+          dispatchQuotes({ type: "INIT_FETCH" });
+        })
+        .catch((e) => {
+          console.log("< Triggered auto add >");
+          authAxios
+            .post("/api/quotes/autoAdd", null, { params: { last: 1 } })
+            .catch((e) => {
+              console.error("Error occurred", e);
+            })
+            .finally(() => dispatchQuotes({ type: "INIT_FETCH" }));
+        });
+    }
     if (storedQuoteObj) {
       const nextTriggerDate = new Date(storedQuote().publishedDate);
       nextTriggerDate.setHours(nextTriggerDate.getHours() + 24); // 24 is added so that 1 day post the previous published date, we start triggering the auto add api
       //Tweets are posted exactly at 2:45 GMT. 2nd March 2:45 GMT tweet posted. Now it is, 2nd March 2:00 GMT ( or 6PM PST ). Current recorded tweet is 1st March 2:45 GMT.
       if (nextTriggerDate) {
-        if (today.valueOf() > nextTriggerDate.valueOf()) {
-          authAxios
-            .post("/api/quotes/autoAdd", null, { params: { last: 1 } })
-            .catch((e) => console.error("Error occurred", e))
-            .finally(() => {
-              console.log("< Triggered auto add >");
-              dispatchQuotes({ type: "INIT_FETCH" });
-            });
-        } else {
+        if (today.valueOf() <= nextTriggerDate.valueOf()) {
           dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
+          return;
         }
-        return;
       }
     }
-    dispatchQuotes({ type: "INIT_FETCH" });
+    validateAndTriggerAutoAdd(today);
   }, []);
 
   useEffect(() => {
     if (quote.isLoading) {
-      console.log("< Fetching new quote >");
+      console.log("< Fetching latest quote from db >");
       authAxios
         .get("/api/quotes/latest")
         .then((response) => {

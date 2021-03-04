@@ -36,12 +36,13 @@ exports.manualAdd = async (req, res) => {
 };
 
 async function getQuotesFromTwitter(pastDays) {
-  const today = new Date();
-  today.setDate(today.getDate() - pastDays);
+  const startDateTime = new Date();
+  startDateTime.setDate(startDateTime.getDate() - pastDays);
+
   try {
     const response = await twitterSearchApi.get("", {
       params: {
-        start_time: today,
+        start_time: startDateTime,
         "tweet.fields": "author_id,created_at,public_metrics,source",
         expansions: "attachments.media_keys",
         "media.fields": "url,height,width",
