@@ -111,7 +111,7 @@ function App() {
     const publishedDate = new Date(quote.publishedDate);
     const offset = publishedDate.getTimezoneOffset() / 60;
     publishedDate.setHours(publishedDate.getHours() + offset);
-    return date.format(publishedDate, datePattern);
+    return `${date.format(publishedDate, datePattern)} GMT`;
   };
 
   return (
@@ -119,7 +119,7 @@ function App() {
       <div className="app">
         <QuoteCard
           key={quote.quote}
-          publishedDate={`${getPublishdedDate()} GMT`}
+          publishedDate={getPublishdedDate()}
           quoteImage={quote.imageLink}
         >
           {quote.isLoading || !quote.quote ? "Loading..." : quote.quote}
