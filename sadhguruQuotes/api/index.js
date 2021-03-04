@@ -1,5 +1,6 @@
 const express = require("express");
 const port = process.env.PORT || 9000;
+require("dotenv").config();
 const cors = require("cors");
 const app = express();
 const log4j = require("log4js");

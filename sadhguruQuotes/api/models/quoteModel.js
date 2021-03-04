@@ -58,7 +58,7 @@ exports.delete = (quoteId) => {
   });
 };
 
-exports.findLatest = (value) => {
+exports.findLatest = () => {
   return Quote.findOne().sort({ publishedDate: -1 });
 };
 

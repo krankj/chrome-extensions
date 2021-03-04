@@ -37,9 +37,7 @@ exports.manualAdd = async (req, res) => {
 
 async function getQuotesFromTwitter(pastDays) {
   const today = new Date();
-  const offset = today.getTimezoneOffset() / 60;
   today.setDate(today.getDate() - pastDays);
-  today.setHours(today.getHours() + offset);
   try {
     const response = await twitterSearchApi.get("", {
       params: {
@@ -76,9 +74,30 @@ async function getQuotesFromTwitter(pastDays) {
   }
 }
 
+exports.quoteExists = async (req, res) => {
+  const dateInput = req.query.date;
+  if (!dateInput) return res.status(400).send({ message: "No date mentioned" });
+  const dateObj = new Date(dateInput);
+  try {
+    const quote = await QuoteModel.findByDate(dateObj);
+    if (quote) {
+      return res.status(200).send({ found: true });
+    } else {
+      return res.status(404).send({ found: false });
+    }
+  } catch (e) {
+    const errMsg = "Something went wrong while checking if quote exists";
+    logger.error(errMsg, e);
+    return res.status(500).send({ error: errMsg });
+  }
+};
+
 exports.autoAdd = async (req, res) => {
   const last = req.query.last;
-  if (!last) return res.status(400).send({ message: "No last date mentioned" });
+  if (!last)
+    return res
+      .status(400)
+      .send({ message: "No value provided for query param 'last'" });
 
   if (last > 7 || last < 1) {
     return res.status(400).send({ message: "Bad query parameter" });
