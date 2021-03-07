@@ -129,5 +129,10 @@ exports.autoAdd = async (req, res) => {
 };
 
 exports.random = (req, res) => {
-  return res.status(200).send();
+  return res
+    .status(200)
+    .send({
+      message:
+        "Last night in USA with Srini and Raksha. Great memories. Great day. Will cherish them forever. Glad to see I could be of some help to them.",
+    });
 };
