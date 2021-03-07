@@ -129,10 +129,17 @@ exports.autoAdd = async (req, res) => {
 };
 
 exports.random = (req, res) => {
-  return res
-    .status(200)
-    .send({
-      message:
-        "Last night in USA with Srini and Raksha. Great memories. Great day. Will cherish them forever. Glad to see I could be of some help to them.",
-    });
+  try{
+  const quoteCount = await QuoteModel.getQuoteCount();
+  const randomNumber = Math.floor(Math.random() * quoteCount);
+  const quotes = await QuoteModel.list(100,0);
+  return res.status(200).send({
+    data: quotes,
+  });
+  }
+  catch(e){
+    console.log("Error occurred", e);
+    return res.status(500).send({message: "Something went wrong"})
+  }
+
 };
