@@ -128,18 +128,16 @@ exports.autoAdd = async (req, res) => {
   }
 };
 
-exports.random = (req, res) => {
-  try{
-  const quotes = await QuoteModel.list(100,0);
-  const quoteCount = quotes.length;
-  const randomNumber = Math.floor(Math.random() * quoteCount);
-  return res.status(200).send({
-    data: quotes[randomNumber],
-  });
-  }
-  catch(e){
+exports.random = async (req, res) => {
+  try {
+    const quotes = await QuoteModel.list(100, 0);
+    const quoteCount = quotes.length;
+    const randomNumber = Math.floor(Math.random() * quoteCount);
+    return res.status(200).send({
+      data: quotes[randomNumber],
+    });
+  } catch (e) {
     console.log("Error occurred", e);
-    return res.status(500).send({message: "Something went wrong"})
+    return res.status(500).send({ message: "Something went wrong" });
   }
-
 };
