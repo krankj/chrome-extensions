@@ -130,11 +130,11 @@ exports.autoAdd = async (req, res) => {
 
 exports.random = (req, res) => {
   try{
-  const quoteCount = await QuoteModel.getQuoteCount();
-  const randomNumber = Math.floor(Math.random() * quoteCount);
   const quotes = await QuoteModel.list(100,0);
+  const quoteCount = quotes.length;
+  const randomNumber = Math.floor(Math.random() * quoteCount);
   return res.status(200).send({
-    data: quotes,
+    data: quotes[randomNumber],
   });
   }
   catch(e){
