@@ -32,11 +32,23 @@
   fill: rgb(138, 70, 6);
 }
 
+.randomIcon:hover {
+  transform: scale(1.15);
+  transition: transform 0.3s;
+  fill: brown;
+}
+
 .todayIcon {
   height: 20px;
   width: 20px;
   margin: 0 1rem;
   fill: rgb(138, 70, 6);
+}
+
+.todayIcon:hover {
+  transform: scale(1.15);
+  transition: transform 0.3s;
+  fill: brown;
 }
 
 button {
