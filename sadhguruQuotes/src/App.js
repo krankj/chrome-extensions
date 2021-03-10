@@ -106,12 +106,12 @@ function App() {
   }, [quote.isLoading]);
 
   const getPublishdedDate = () => {
-    if (quote.isLoading || !quote.publishedDate) return "Please wait...";
     if (quote.isError) return "Infinity";
+    if (quote.isLoading || !quote.publishedDate) return "Please wait...";
     const publishedDate = new Date(quote.publishedDate);
     const offset = publishedDate.getTimezoneOffset() / 60;
     publishedDate.setHours(publishedDate.getHours() + offset);
-    return `${date.format(publishedDate, datePattern)} GMT`;
+    return `${date.format(publishedDate, datePattern)}`;
   };
 
   return (
@@ -122,7 +122,9 @@ function App() {
           publishedDate={getPublishdedDate()}
           quoteImage={quote.imageLink}
         >
-          {quote.isLoading || !quote.quote ? "Loading..." : quote.quote}
+          {(quote.isLoading || !quote.quote) && !quote.isError
+            ? "Loading..."
+            : quote.quote}
           {quote.isError &&
             "There is nothing wrong or right. It's just something pleasant or unplesant that has occurred. Hold tight while I make it pleasant"}
         </QuoteCard>
