@@ -2,11 +2,18 @@ import React from "react";
 // import axios from "axios";
 import sgSignature from "./assets/sg_signature.png";
 import sgUnderline from "./assets/quote-beneath.png";
-
+import { ReactComponent as Random } from "./assets/icons/bell.svg";
+import { ReactComponent as Today } from "./assets/icons/message.svg";
 import SadhguruDefaultImage from "./assets/sadhguru.jpg";
 import "./QuoteCard.css";
 
-const QuoteCard = ({ publishedDate, quoteImage, children }) => {
+const QuoteCard = ({
+  publishedDate,
+  quoteImage,
+  children,
+  onRandomClick,
+  onTodaysQuoteClick,
+}) => {
   // const [data, setData] = React.useState("");
   // React.useEffect(() => {
   //   axios
@@ -25,6 +32,14 @@ const QuoteCard = ({ publishedDate, quoteImage, children }) => {
           e.target.src = SadhguruDefaultImage;
         }}
       />
+      <div className="controlsContainer">
+        <button title="Get Random Quote" onClick={onRandomClick}>
+          <Random className="randomIcon" />
+        </button>
+        <button title="Get Today's quote" onClick={onTodaysQuoteClick}>
+          <Today className="todayIcon" />
+        </button>
+      </div>
       <div className="quoteTextContainer">
         <p className="quoteText">{children}</p>
       </div>

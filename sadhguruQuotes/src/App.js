@@ -105,6 +105,15 @@ function App() {
     }
   }, [quote.isLoading]);
 
+  const handleRandomClick = () => {
+    authAxios
+      .get("/api/quotes/random")
+      .then((response) =>
+        dispatchQuotes({ type: "SUCCESS", payload: response.data.data })
+      )
+      .catch((e) => console.log("Error occurred", e));
+  };
+
   const getPublishdedDate = () => {
     if (quote.isError) return "Infinity";
     if (quote.isLoading || !quote.publishedDate) return "Please wait...";
@@ -121,6 +130,8 @@ function App() {
           key={quote.quote}
           publishedDate={getPublishdedDate()}
           quoteImage={quote.imageLink}
+          onTodaysQuoteClick={() => console.log("Today quote")}
+          onRandomClick={handleRandomClick}
         >
           {(quote.isLoading || !quote.quote) && !quote.isError
             ? "Loading..."

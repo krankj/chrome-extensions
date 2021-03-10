@@ -20,10 +20,33 @@
   height: 400px;
   box-shadow: 0 6px 12px 0 rgba(87, 51, 0, 0.7), 0 8px 12px 0 rgba(0, 0, 0, 0.1);
 }
+.controlsContainer {
+  display: flex;
+  margin: 2rem 0 0 0;
+}
+
+.randomIcon {
+  height: 20px;
+  width: 20px;
+  margin: 0 1rem;
+  fill: rgb(138, 70, 6);
+}
+
+.todayIcon {
+  height: 20px;
+  width: 20px;
+  margin: 0 1rem;
+  fill: rgb(138, 70, 6);
+}
+
+button {
+  all: unset;
+  cursor: pointer;
+}
 
 .quoteTextContainer {
   max-width: 800px;
-  margin: 2rem 0 0 0;
+  margin: 0 0 0 0;
 }
 
 .signatureBox {
@@ -59,6 +82,14 @@
   }
   .sg-image {
     height: 200px;
+  }
+  .randomIcon {
+    height: 15px;
+    width: 15px;
+  }
+  .todayIcon {
+    height: 15px;
+    width: 15px;
   }
 }
 
