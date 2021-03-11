@@ -32,14 +32,6 @@ const QuoteCard = ({
           e.target.src = SadhguruDefaultImage;
         }}
       />
-      <div className="controlsContainer">
-        <button title="Get Random Quote" onClick={onRandomClick}>
-          <Random className="randomIcon" />
-        </button>
-        <button title="Get Today's quote" onClick={onTodaysQuoteClick}>
-          <Today className="todayIcon" />
-        </button>
-      </div>
       <div className="quoteTextContainer">
         <p className="quoteText">{children}</p>
       </div>
@@ -54,6 +46,14 @@ const QuoteCard = ({
           src={sgUnderline}
           alt="Sadhguru Underline"
         />
+      </div>
+      <div className="controlsContainer">
+        <button title="Get Random Quote" onClick={onRandomClick}>
+          <Random className="randomIcon" />
+        </button>
+        <button title="Get Today's quote" onClick={onTodaysQuoteClick}>
+          <Today className="todayIcon" />
+        </button>
       </div>
     </div>
   );
