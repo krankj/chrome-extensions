@@ -1,0 +1,31 @@
+.controlsContainer {
+  display: flex;
+  margin: 2rem 0 0 0;
+  opacity: 0.7;
+  transition: 2.5s ease-in-out;
+}
+
+.randomIcon {
+  height: 20px;
+  width: 20px;
+  margin: 0 1rem;
+  fill: rgb(138, 70, 6);
+}
+
+.todayIcon {
+  height: 20px;
+  width: 20px;
+  margin: 0 1rem;
+  fill: rgb(138, 70, 6);
+}
+
+@media screen and (max-width: 600px) {
+  .randomIcon {
+    height: 15px;
+    width: 15px;
+  }
+  .todayIcon {
+    height: 15px;
+    width: 15px;
+  }
+}

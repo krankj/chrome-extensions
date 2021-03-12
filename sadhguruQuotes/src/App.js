@@ -4,6 +4,7 @@ import QuoteCard from "./QuoteCard";
 import ordinal from "date-and-time/plugin/ordinal";
 import date from "date-and-time";
 import authAxios from "./utils/auth";
+import Controls from "./Controls";
 
 date.plugin(ordinal);
 const datePattern = date.compile("MMMM DDD, YYYY");
@@ -114,6 +115,10 @@ function App() {
       .catch((e) => console.log("Error occurred", e));
   };
 
+  const handleTodaysQuoteClick = () => {
+    dispatchQuotes({ type: "SUCCESS", payload: storedQuote() });
+  };
+
   const getPublishdedDate = () => {
     if (quote.isError) return "Infinity";
     if (quote.isLoading || !quote.publishedDate) return "Please wait...";
@@ -130,8 +135,6 @@ function App() {
           key={quote.quote}
           publishedDate={getPublishdedDate()}
           quoteImage={quote.imageLink}
-          onTodaysQuoteClick={() => console.log("Today quote")}
-          onRandomClick={handleRandomClick}
         >
           {(quote.isLoading || !quote.quote) && !quote.isError
             ? "Loading..."
@@ -139,6 +142,10 @@ function App() {
           {quote.isError &&
             "There is nothing wrong or right. It's just something pleasant or unplesant that has occurred. Hold tight while I make it pleasant"}
         </QuoteCard>
+        <Controls
+          onTodaysQuoteClick={handleTodaysQuoteClick}
+          onRandomClick={handleRandomClick}
+        />
       </div>
     </div>
   );

@@ -114,16 +114,20 @@ exports.autoAdd = async (req, res) => {
         .send({ message: "No quotes could be fetched from twitter" });
     }
   } catch (e) {
-    let failedCount = e.writeErrors.length;
-    if (last - failedCount === 0) {
-      return res
-        .status(409)
-        .send({ error: "Could not insert any of the quotes: " + e });
+    if (e.writeErrors) {
+      let failedCount = e.writeErrors.length;
+      if (last - failedCount === 0) {
+        return res
+          .status(409)
+          .send({ error: "Could not insert any of the quotes: " + e });
+      } else {
+        return res.status(206).send({
+          error: "Few documents' insertion failed",
+          failedDocs: failedCount,
+        });
+      }
     } else {
-      return res.status(206).send({
-        error: "Few documents' insertion failed",
-        failedDocs: failedCount,
-      });
+      return res.status(500).send({ error: "Something went wrong " + e });
     }
   }
 };
