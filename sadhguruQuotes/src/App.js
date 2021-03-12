@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useRef } from "react";
 import "./App.css";
 import QuoteCard from "./QuoteCard";
 import ordinal from "date-and-time/plugin/ordinal";
@@ -58,7 +58,7 @@ function App() {
           params: { date: today.toISOString().split("T")[0] },
         })
         .then(() => {
-          console.log("< Latest quote already exists >");
+          console.log("< Latest quote already exists in db >");
           dispatchQuotes({ type: "INIT_FETCH" });
         })
         .catch((e) => {
@@ -85,28 +85,34 @@ function App() {
     validateAndTriggerAutoAdd(today);
   }, []);
 
+  const firstFetch = useRef(true);
+
   useEffect(() => {
     if (quote.isLoading) {
-      console.log("< Fetching latest quote from db >");
-      authAxios
-        .get("/api/quotes/latest")
-        .then((response) => {
-          if (response.data.found) {
-            storeLocally(QUOTE_KEY, response.data.data);
-            dispatchQuotes({
-              type: "SUCCESS",
-              payload: response.data.data,
-            });
-          }
-        })
-        .catch((e) => {
-          console.error("Error is", e);
-          dispatchQuotes({ type: "FAILED" });
-        });
+      if (firstFetch.current) {
+        firstFetch.current = false;
+        console.log("< Fetching latest quote from db >");
+        authAxios
+          .get("/api/quotes/latest")
+          .then((response) => {
+            if (response.data.found) {
+              storeLocally(QUOTE_KEY, response.data.data);
+              dispatchQuotes({
+                type: "SUCCESS",
+                payload: response.data.data,
+              });
+            }
+          })
+          .catch((e) => {
+            console.error("Error is", e);
+            dispatchQuotes({ type: "FAILED" });
+          });
+      }
     }
   }, [quote.isLoading]);
 
   const handleRandomClick = () => {
+    dispatchQuotes({ type: "INIT_FETCH" });
     authAxios
       .get("/api/quotes/random")
       .then((response) =>
