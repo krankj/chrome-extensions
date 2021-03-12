@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ReactComponent as Random } from "./assets/icons/refresh.svg";
-import { ReactComponent as Today } from "./assets/icons/message.svg";
+import { ReactComponent as Today } from "./assets/icons/right-quote.svg";
 import "./Controls.css";
 
 const Controls = ({ onRandomClick, onTodaysQuoteClick }) => {
