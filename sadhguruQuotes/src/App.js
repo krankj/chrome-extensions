@@ -6,6 +6,7 @@ import date from "date-and-time";
 import authAxios from "./utils/auth";
 import Controls from "./Controls";
 import publicIp from "public-ip";
+import SideDrawer from "./components/SideDrawer";
 
 const getClientIp = async () =>
   await publicIp.v4({
@@ -164,6 +165,7 @@ function App() {
           onTodaysQuoteClick={handleTodaysQuoteClick}
           onRandomClick={handleRandomClick}
         />
+        <SideDrawer />
       </div>
     </div>
   );
