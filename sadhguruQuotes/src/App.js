@@ -47,8 +47,7 @@ function storeLocally(key, value) {
 function App() {
   const storedQuote = () => JSON.parse(localStorage.getItem(QUOTE_KEY));
   const [quote, dispatchQuotes] = useReducer(quoteReducer, quoteInit);
-  const firstFetch = useRef(true);
-
+  const fetchNewQuote = useRef(true);
   useEffect(() => {
     //check if quote is outdated and if there exists new quote for today
     const storedQuoteObj = storedQuote();
@@ -73,12 +72,13 @@ function App() {
         });
     }
     if (storedQuoteObj) {
-      firstFetch.current = false;
       const nextTriggerDate = new Date(storedQuote().publishedDate);
       nextTriggerDate.setHours(nextTriggerDate.getHours() + 24); // 24 is added so that 1 day post the previous published date, we start triggering the auto add api
       //Tweets are posted exactly at 2:45 GMT. 2nd March 2:45 GMT tweet posted. Now it is, 2nd March 2:00 GMT ( or 6PM PST ). Current recorded tweet is 1st March 2:45 GMT.
       if (nextTriggerDate) {
         if (today.valueOf() <= nextTriggerDate.valueOf()) {
+          fetchNewQuote.current = false;
+          console.log("< Retrieving latest quote from cache >");
           dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
           return;
         }
@@ -89,8 +89,8 @@ function App() {
 
   useEffect(() => {
     if (quote.isLoading) {
-      if (firstFetch.current) {
-        firstFetch.current = false;
+      if (fetchNewQuote.current) {
+        fetchNewQuote.current = false;
         console.log("< Fetching latest quote from db >");
         authAxios
           .get("/api/quotes/latest")
