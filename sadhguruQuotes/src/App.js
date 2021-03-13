@@ -5,6 +5,12 @@ import ordinal from "date-and-time/plugin/ordinal";
 import date from "date-and-time";
 import authAxios from "./utils/auth";
 import Controls from "./Controls";
+import publicIp from "public-ip";
+
+const getClientIp = async () =>
+  await publicIp.v4({
+    fallbackUrls: ["https://ifconfig.co/ip"],
+  });
 
 date.plugin(ordinal);
 const datePattern = date.compile("MMMM DDD, YYYY");
@@ -49,6 +55,8 @@ function App() {
   const [quote, dispatchQuotes] = useReducer(quoteReducer, quoteInit);
   const fetchNewQuote = useRef(true);
   useEffect(() => {
+    getClientIp().then((result) => console.log("Ip is", result));
+
     //check if quote is outdated and if there exists new quote for today
     const storedQuoteObj = storedQuote();
     const today = new Date();
@@ -83,6 +91,8 @@ function App() {
           return;
         }
       }
+    } else {
+      console.log("< Local cache is empty >");
     }
     validateAndTriggerAutoAdd(today);
   }, []);
@@ -97,6 +107,7 @@ function App() {
           .then((response) => {
             if (response.data.found) {
               storeLocally(QUOTE_KEY, response.data.data);
+              console.log("< Updated local cache with the latest quote>");
               dispatchQuotes({
                 type: "SUCCESS",
                 payload: response.data.data,

@@ -1,6 +1,6 @@
 {
   "name": "Daily Sadhguru Quotes",
-  "description" : "Remind yourselves of the deep wisdom provided by Sadhguru on every new tab",
+  "description" : "Gain a new perspective and remind yourselves to the deep wisdom provided by Sadhguru on every New Tab",
   "version": "1.0",
   "manifest_version": 3,
   "background": {
@@ -9,12 +9,22 @@
   "chrome_url_overrides" : {
     "newtab": "index.html"
   },
+  "author": "Sudarshan: kjsudi@gmail.com",
   "action": {
-    "default_icon": "sg-icon.png"
+    "default_icon": {"16" :"sadhguru-icon.png", "48": "sadhguru-icon.png", "128" : "sadhguru-icon.png"},
+    "default_title": "Remind yourselves to the deep wisdom provided by Sadhguru on every New Tab",
+    "default_popup": "index.html"
+
   },
+  "icons": [
+    {
+      "src": "sg-icon-2.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }
+  ],
   "permissions": [
-    "tabs",
-    "storage"
+    "tabs"
   ],
   "commands": {
     "_execute_action": {
