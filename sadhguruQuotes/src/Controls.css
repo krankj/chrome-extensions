@@ -20,11 +20,3 @@
     transition: transform 0.2s;
   }
 }
-
-@media screen and (max-width: 600px) {
-  .randomIcon,
-  .todayIcon {
-    height: 15px;
-    width: 15px;
-  }
-}

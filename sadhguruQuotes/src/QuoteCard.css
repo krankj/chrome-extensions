@@ -14,6 +14,7 @@
 .quoteDate {
   font-family: "Sadhguru Thin";
   font-size: calc(6px + 1.5vmin);
+  margin: 1.5rem 0;
 }
 
 .sg-image {
