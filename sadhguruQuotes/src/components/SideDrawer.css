@@ -82,6 +82,12 @@ h1 {
   }
 }
 
+@media screen and (max-height: 600px) {
+  .openButton {
+    top: 10px;
+  }
+}
+
 @media screen and (max-width: 990px) {
   .open {
     width: 100%;
