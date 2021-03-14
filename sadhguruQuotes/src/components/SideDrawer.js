@@ -1,32 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 import "./SideDrawer.css";
 import classNames from "classnames";
+import SocialIcons from "./SocialIcons";
 
-const SideDrawer = (props) => {
-  const [isOpen, setIsOpen] = useState(false);
+const SideDrawer = ({ isOpen, handleDrawer }) => {
   return (
     <div>
       <span
-        className="openButton"
-        onClick={() => {
-          setIsOpen(true);
-        }}
+        className={classNames("openButton", { hide: isOpen })}
+        onClick={handleDrawer}
       >
         &#9776;
       </span>
-
       <div className={classNames("sidenav", { open: isOpen })}>
-        <a
-          className="closebtn"
-          onClick={() => {
-            console.log("Close button clicked");
-            setIsOpen(false);
-          }}
-        >
+        <button className="closebtn" onClick={handleDrawer}>
           &times;
-        </a>
-        <a href="#">About</a>
-        <a href="#">Services</a>
+        </button>
+        <div
+          key={isOpen}
+          className={classNames("contactContainer", { hide: !isOpen })}
+        >
+          <h1>Made with love and grace by</h1>
+          <p>Sudarshan K J</p>
+          <p>kjsudi@gmail.com</p>
+          <p>+919686678568</p>
+          <SocialIcons />
+        </div>
       </div>
     </div>
   );

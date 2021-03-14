@@ -7,10 +7,17 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: rgb(138, 70, 6);
+  transition: 0.5s;
 }
 
 @media screen and (max-width: 600px) {
   .app {
     padding: 0 24px;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .shrink {
+    margin-left: 250px;
   }
 }

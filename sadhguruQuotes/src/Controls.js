@@ -9,6 +9,7 @@ const Controls = ({ onRandomClick, onTodaysQuoteClick }) => {
   return (
     <div className="controlsContainer">
       <button
+        className="randomButton"
         title="Get Random Quote"
         onClick={() => {
           setShowTodaysQuoteButton(true);
@@ -19,6 +20,7 @@ const Controls = ({ onRandomClick, onTodaysQuoteClick }) => {
       </button>
       {showTodaysQuoteButton && (
         <button
+          className="todayButton"
           title="Get Today's quote"
           onClick={() => {
             setShowTodaysQuoteButton(false);

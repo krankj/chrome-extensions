@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import "./App.css";
 import QuoteCard from "./QuoteCard";
 import ordinal from "date-and-time/plugin/ordinal";
@@ -7,6 +7,7 @@ import authAxios from "./utils/auth";
 import Controls from "./Controls";
 import publicIp from "public-ip";
 import SideDrawer from "./components/SideDrawer";
+import classNames from "classnames";
 
 const getClientIp = async () =>
   await publicIp.v4({
@@ -54,7 +55,9 @@ function storeLocally(key, value) {
 function App() {
   const storedQuote = () => JSON.parse(localStorage.getItem(QUOTE_KEY));
   const [quote, dispatchQuotes] = useReducer(quoteReducer, quoteInit);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const fetchNewQuote = useRef(true);
+
   useEffect(() => {
     getClientIp().then((result) => console.log("Ip is", result));
 
@@ -147,9 +150,13 @@ function App() {
     return `${date.format(publishedDate, datePattern)}`;
   };
 
+  const handleDrawer = () => {
+    setIsDrawerOpen((prev) => !prev);
+  };
+
   return (
     <div className="container">
-      <div className="app">
+      <div className={classNames("app", { shrink: isDrawerOpen })}>
         <QuoteCard
           key={quote.quote}
           publishedDate={getPublishdedDate()}
@@ -165,7 +172,7 @@ function App() {
           onTodaysQuoteClick={handleTodaysQuoteClick}
           onRandomClick={handleRandomClick}
         />
-        <SideDrawer />
+        <SideDrawer isOpen={isDrawerOpen} handleDrawer={handleDrawer} />
       </div>
     </div>
   );
