@@ -5,7 +5,6 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: rgb(138, 70, 6);
   text-align: center;
   animation: fadein 700ms;
   transition: 0.7s;

@@ -11,16 +11,38 @@
   opacity: 0.95;
 }
 
-.open {
-  width: 300px;
-}
-
-.sidenav .contactContainer {
+.contentContainer {
   height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
   align-items: center;
-  justify-content: center;
+  animation: fadein 1.2s;
+}
+
+.open { 
+  width: 300px;
+}
+
+.infoContainer {
+  text-align: center;
+}
+
+.infoContainer a {
+  text-decoration: none;
+  color: inherit;
+  color:rgb(255, 188, 62);
+}
+
+.infoContainer a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.icon {
+  height: 20px;
+  width: 20px;
+  fill:rgb(255, 188, 62);
 }
 
 .sidenav button {
@@ -32,15 +54,14 @@
   transition: 0.3s;
 }
 
-.sidenav p,
+.contentContainer p,
 h1 {
   font-family: "Sadhguru Thin";
-  width: 200px;
+  width: 200px; /*Fixed width is given so that the content doesnt expand when the drawer is being opened*/
   text-align: center;
   color: white;
   font-size: 1rem;
-  animation: fadein 1s;
-  margin: 2px;
+  margin: 4px;
 }
 
 h1 {
@@ -50,8 +71,9 @@ h1 {
 }
 
 .sidenav button:hover {
-  color: #cac8c8;
+  color: rgb(255, 188, 62);
 }
+
 
 .sidenav .closebtn {
   position: absolute;

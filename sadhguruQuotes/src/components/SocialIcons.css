@@ -1,21 +1,12 @@
 .socialIcons {
-  margin: 1rem;
   display: flex;
-  width: 80px;
-  justify-content: space-around;
-  animation: fadein 1s;
+  justify-content: center;
 }
 
 .socialIcons img {
   height: 20px;
   width: 20px;
+  margin:0.8rem;
 }
 
-@keyframes fadein {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
+
