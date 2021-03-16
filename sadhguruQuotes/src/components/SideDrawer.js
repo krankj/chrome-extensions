@@ -30,7 +30,7 @@ const SideDrawer = ({ isOpen, handleDrawer }) => {
           <div className="infoContainer">
             <ContentIcon className="icon" />
             <p>
-              All the content is proprietary of{" "}
+              All the content and related assets are proprietary of{" "}
               <a
                 href="https://isha.sadhguru.org/in/en/wisdom/type/quotes"
                 target="_blank"
