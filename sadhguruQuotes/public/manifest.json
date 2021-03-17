@@ -17,16 +17,13 @@
   },
 "display": "fullscreen",
 "icons": {"128" : "sg-icon-4.png"},
-  "permissions": [
-    "tabs"
-  ],
   "commands": {
     "_execute_action": {
       "suggested_key": {
         "default": "Ctrl+Shift+F",
         "mac": "MacCtrl+Shift+F"
       },
-      "description": "Opens hello.html"
+      "description": "Opens Sadhguru's pop up"
     }
   }
 }
