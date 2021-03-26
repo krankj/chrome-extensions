@@ -49,6 +49,17 @@ const quoteReducer = (state, action) => {
 
 const QUOTE_KEY = "sg-quote";
 const QUOTES_ARRAY_KEY = "sg-quotes-array";
+const FETCH_RANDOM_QUOTE_KEY = "sg-fetch-random-quote";
+
+const checkRandomQuotesCacheKey = () => {
+  const key = JSON.parse(localStorage.getItem(FETCH_RANDOM_QUOTE_KEY));
+  if (key !== undefined) {
+    return key;
+  } else {
+    localStorage.setItem(FETCH_RANDOM_QUOTE_KEY, false);
+    return false;
+  }
+};
 
 function storeLocally(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
@@ -56,20 +67,38 @@ function storeLocally(key, value) {
 
 function App() {
   const storedQuote = () => JSON.parse(localStorage.getItem(QUOTE_KEY));
-  const storedQuotesArray = () =>
-    JSON.parse(localStorage.getItem(QUOTES_ARRAY_KEY));
-
+  const storedRandomQuote = () => {
+    let storedQuotes = JSON.parse(localStorage.getItem(QUOTES_ARRAY_KEY));
+    if (storedQuotes) {
+      let lengthOfQuotesArray = storedQuotes.length;
+      let random = Math.floor(Math.random() * lengthOfQuotesArray);
+      return storedQuotes[random];
+    } else {
+      return storedQuote();
+    }
+  };
+  const storedQuoteObj = storedQuote();
+  const storedRandomQuoteVar = storedRandomQuote();
   const [quote, dispatchQuotes] = useReducer(quoteReducer, quoteInit);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [showNewQuoteOnEveryLoad, setShowNewQuoteOnEveryLoad] = useState(false);
+  const [showNewQuoteOnEveryLoad, setShowNewQuoteOnEveryLoad] = useState(() =>
+    checkRandomQuotesCacheKey()
+  );
   const fetchNewQuote = useRef(true);
+
+  const handleToggleSwitch = (value) => {
+    setShowNewQuoteOnEveryLoad(value);
+    if (value) {
+      dispatchQuotes({ type: "SUCCESS", payload: storedRandomQuoteVar });
+    } else {
+      dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
+    }
+  };
 
   useEffect(() => {
     getClientIp().then((result) => console.log(`< Ip is ${result} >`));
 
     //check if quote is outdated and if there exists new quote for today
-    const storedQuoteObj = storedQuote();
-    const storedQuotesArrayObj = storedQuotesArray();
 
     const today = new Date();
     function validateAndTriggerAutoAdd(today) {
@@ -98,14 +127,14 @@ function App() {
       if (nextTriggerDate) {
         if (today.valueOf() <= nextTriggerDate.valueOf()) {
           if (showNewQuoteOnEveryLoad) {
-            if (storedQuotesArrayObj) {
-              let lengthOfQuotesArray = storedQuotesArrayObj.length;
-              let random = Math.floor(Math.random() * lengthOfQuotesArray);
+            if (storedRandomQuote) {
               console.log("< Retrieving a random quote from cache >");
               dispatchQuotes({
                 type: "SUCCESS",
-                payload: storedQuotesArrayObj[random],
+                payload: storedRandomQuoteVar,
               });
+            } else {
+              dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
             }
           } else {
             console.log("< Retrieving latest quote from cache >");
@@ -154,23 +183,24 @@ function App() {
           .catch((e) => {
             console.error("Error is", e);
           });
-      } else {
-        authAxios
-          .get("/api/quotes/random")
-          .then((response) =>
-            dispatchQuotes({ type: "SUCCESS", payload: response.data.data })
-          )
-          .catch((e) => console.log("Error occurred", e));
       }
+      //else {
+      //   authAxios
+      //     .get("/api/quotes/random")
+      //     .then((response) =>
+      //       dispatchQuotes({ type: "SUCCESS", payload: response.data.data })
+      //     )
+      //     .catch((e) => console.log("Error occurred", e));
+      // }
     }
   }, [quote.isLoading]);
 
   const handleRandomClick = () => {
-    dispatchQuotes({ type: "INIT_FETCH" });
+    dispatchQuotes({ type: "SUCCESS", payload: storedRandomQuoteVar });
   };
 
   const handleTodaysQuoteClick = () => {
-    dispatchQuotes({ type: "SUCCESS", payload: storedQuote() });
+    dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
   };
 
   const getPublishdedDate = () => {
@@ -188,8 +218,10 @@ function App() {
 
   return (
     <div className="container">
-      <ToggleSwitch />
-
+      <ToggleSwitch
+        callback={handleToggleSwitch}
+        initState={showNewQuoteOnEveryLoad}
+      />
       <div className={classNames("app", { shrink: isDrawerOpen })}>
         <QuoteCard
           key={quote.quote}
