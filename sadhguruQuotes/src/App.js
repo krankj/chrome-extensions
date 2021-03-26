@@ -1,13 +1,14 @@
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import "./App.css";
-import QuoteCard from "./QuoteCard";
+import QuoteCard from "./components/QuoteCard";
 import ordinal from "date-and-time/plugin/ordinal";
 import date from "date-and-time";
 import authAxios from "./utils/auth";
-import Controls from "./Controls";
+import Controls from "./components/Controls";
 import publicIp from "public-ip";
 import SideDrawer from "./components/SideDrawer";
 import classNames from "classnames";
+import ToggleSwitch from "./components/ToggleSwitch";
 
 const getClientIp = async () =>
   await publicIp.v4({
@@ -47,6 +48,7 @@ const quoteReducer = (state, action) => {
 };
 
 const QUOTE_KEY = "sg-quote";
+const QUOTES_ARRAY_KEY = "sg-quotes-array";
 
 function storeLocally(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
@@ -54,15 +56,21 @@ function storeLocally(key, value) {
 
 function App() {
   const storedQuote = () => JSON.parse(localStorage.getItem(QUOTE_KEY));
+  const storedQuotesArray = () =>
+    JSON.parse(localStorage.getItem(QUOTES_ARRAY_KEY));
+
   const [quote, dispatchQuotes] = useReducer(quoteReducer, quoteInit);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [showNewQuoteOnEveryLoad, setShowNewQuoteOnEveryLoad] = useState(false);
   const fetchNewQuote = useRef(true);
 
   useEffect(() => {
-    getClientIp().then((result) => console.log("Ip is", result));
+    getClientIp().then((result) => console.log(`< Ip is ${result} >`));
 
     //check if quote is outdated and if there exists new quote for today
     const storedQuoteObj = storedQuote();
+    const storedQuotesArrayObj = storedQuotesArray();
+
     const today = new Date();
     function validateAndTriggerAutoAdd(today) {
       authAxios
@@ -89,9 +97,21 @@ function App() {
       //Tweets are posted exactly at 2:45 GMT. 2nd March 2:45 GMT tweet posted. Now it is, 2nd March 2:00 GMT ( or 6PM PST ). Current recorded tweet is 1st March 2:45 GMT.
       if (nextTriggerDate) {
         if (today.valueOf() <= nextTriggerDate.valueOf()) {
+          if (showNewQuoteOnEveryLoad) {
+            if (storedQuotesArrayObj) {
+              let lengthOfQuotesArray = storedQuotesArrayObj.length;
+              let random = Math.floor(Math.random() * lengthOfQuotesArray);
+              console.log("< Retrieving a random quote from cache >");
+              dispatchQuotes({
+                type: "SUCCESS",
+                payload: storedQuotesArrayObj[random],
+              });
+            }
+          } else {
+            console.log("< Retrieving latest quote from cache >");
+            dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
+          }
           fetchNewQuote.current = false;
-          console.log("< Retrieving latest quote from cache >");
-          dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
           return;
         }
       }
@@ -111,7 +131,7 @@ function App() {
           .then((response) => {
             if (response.data.found) {
               storeLocally(QUOTE_KEY, response.data.data);
-              console.log("< Updated local cache with the latest quote>");
+              console.log("< Updated local cache with the latest quote >");
               dispatchQuotes({
                 type: "SUCCESS",
                 payload: response.data.data,
@@ -121,6 +141,18 @@ function App() {
           .catch((e) => {
             console.error("Error is", e);
             dispatchQuotes({ type: "FAILED" });
+          });
+        console.log("< Fetching many other quotes from db >");
+        authAxios
+          .get("/api/quotes/many")
+          .then((response) => {
+            if (response.data.found) {
+              storeLocally(QUOTES_ARRAY_KEY, response.data.data);
+              console.log("< Updated local cache with last 50 quotes >");
+            }
+          })
+          .catch((e) => {
+            console.error("Error is", e);
           });
       } else {
         authAxios
@@ -156,6 +188,8 @@ function App() {
 
   return (
     <div className="container">
+      <ToggleSwitch />
+
       <div className={classNames("app", { shrink: isDrawerOpen })}>
         <QuoteCard
           key={quote.quote}

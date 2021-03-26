@@ -1,7 +1,7 @@
 import React from "react";
-import sgSignature from "./assets/sg_signature.png";
-import sgUnderline from "./assets/quote-beneath.png";
-import SadhguruDefaultImage from "./assets/sadhguru.jpg";
+import sgSignature from "../assets/sg_signature.png";
+import sgUnderline from "../assets/quote-beneath.png";
+import SadhguruDefaultImage from "../assets/sadhguru.jpg";
 import "./QuoteCard.css";
 
 const QuoteCard = ({ publishedDate, quoteImage, children }) => {

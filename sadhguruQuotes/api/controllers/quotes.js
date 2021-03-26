@@ -22,6 +22,16 @@ exports.latest = async (req, res) => {
   }
 };
 
+exports.getManyQuotes = async (req, res) => {
+  try {
+    const quotes = await QuoteModel.list(50, 0);
+    if (quotes) return res.status(200).send({ found: true, data: quotes });
+    else return res.status(404).send({ found: false, data: "No quotes found" });
+  } catch (e) {
+    return res.status(500).send({ error: "Internal error" + e });
+  }
+};
+
 exports.range = (req, res) => {};
 
 exports.manualAdd = async (req, res) => {
