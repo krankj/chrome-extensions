@@ -11,12 +11,12 @@
   },
   "author": "Sudarshan: kjsudi@gmail.com",
   "action": {
-    "default_icon": {"16" :"sg-icon-4.png", "48": "sg-icon-4.png", "128" : "sg-icon-4.png"},
+    "default_icon": {"16" :"sg-icon-16x16.png", "48": "sg-icon-48x48.png", "128" : "sg-icon-128x128.png"},
     "default_title": "Remind yourselves to the deep wisdom provided by Sadhguru on every New Tab. New quotes every day at 2:45 GMT",
     "default_popup": "index.html"
   },
 "display": "fullscreen",
-"icons": {"128" : "sg-icon-4.png"},
+"icons": {"128" : "sg-icon-128x128.png"},
   "commands": {
     "_execute_action": {
       "suggested_key": {
