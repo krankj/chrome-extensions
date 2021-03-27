@@ -20,7 +20,7 @@
   animation: fadein 1.2s;
 }
 
-.open { 
+.open {
   width: 300px;
 }
 
@@ -31,7 +31,7 @@
 .infoContainer a {
   text-decoration: none;
   color: inherit;
-  color:rgb(255, 188, 62);
+  color: rgb(255, 188, 62);
 }
 
 .infoContainer a:hover {
@@ -42,7 +42,13 @@
 .icon {
   height: 20px;
   width: 20px;
-  fill:rgb(255, 188, 62);
+  fill: rgb(255, 188, 62);
+}
+
+.infoIcon {
+  height: 22px;
+  width: 22px;
+  fill: rgb(138, 70, 6);
 }
 
 .sidenav button {
@@ -73,7 +79,6 @@ h1 {
 .sidenav button:hover {
   color: rgb(255, 188, 62);
 }
-
 
 .sidenav .closebtn {
   position: absolute;

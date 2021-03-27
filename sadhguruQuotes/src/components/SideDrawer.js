@@ -5,6 +5,7 @@ import SocialIcons from "./SocialIcons";
 import { ReactComponent as ClockIcon } from "../assets/icons/wall-clock.svg";
 import { ReactComponent as ContentIcon } from "../assets/icons/content.svg";
 import { ReactComponent as MadeIcon } from "../assets/icons/tools.svg";
+import { ReactComponent as InfoIcon } from "../assets/icons/information.svg";
 
 const SideDrawer = ({ isOpen, handleDrawer }) => {
   return (
@@ -13,7 +14,8 @@ const SideDrawer = ({ isOpen, handleDrawer }) => {
         className={classNames("openButton", { hide: isOpen })}
         onClick={handleDrawer}
       >
-        &#9776;
+        {/* &#9776; */}
+        <InfoIcon className="infoIcon" />
       </span>
       <div className={classNames("sidenav", { open: isOpen })}>
         <div
