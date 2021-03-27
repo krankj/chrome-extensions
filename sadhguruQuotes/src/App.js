@@ -9,6 +9,7 @@ import publicIp from "public-ip";
 import SideDrawer from "./components/SideDrawer";
 import classNames from "classnames";
 import ToggleSwitch from "./components/ToggleSwitch";
+import { getFromLocalCache, setToLocalCache } from "./utils/localstorage";
 
 const getClientIp = async () =>
   await publicIp.v4({
@@ -52,7 +53,7 @@ const QUOTES_ARRAY_KEY = "sg-quotes-array";
 const FETCH_RANDOM_QUOTE_KEY = "sg-fetch-random-quote";
 
 const checkRandomQuotesCacheKey = () => {
-  const key = JSON.parse(localStorage.getItem(FETCH_RANDOM_QUOTE_KEY));
+  const key = getFromLocalCache(FETCH_RANDOM_QUOTE_KEY);
   if (key !== undefined) {
     return key;
   } else {
@@ -61,14 +62,10 @@ const checkRandomQuotesCacheKey = () => {
   }
 };
 
-function storeLocally(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
-}
-
 function App() {
-  const storedQuote = () => JSON.parse(localStorage.getItem(QUOTE_KEY));
+  const storedQuote = () => getFromLocalCache(QUOTE_KEY);
   const storedRandomQuote = () => {
-    let storedQuotes = JSON.parse(localStorage.getItem(QUOTES_ARRAY_KEY));
+    let storedQuotes = getFromLocalCache(QUOTES_ARRAY_KEY);
     if (storedQuotes) {
       let lengthOfQuotesArray = storedQuotes.length;
       let random = Math.floor(Math.random() * lengthOfQuotesArray);
@@ -159,7 +156,7 @@ function App() {
           .get("/api/quotes/latest")
           .then((response) => {
             if (response.data.found) {
-              storeLocally(QUOTE_KEY, response.data.data);
+              setToLocalCache(QUOTE_KEY, response.data.data);
               console.log("< Updated local cache with the latest quote >");
               dispatchQuotes({
                 type: "SUCCESS",
@@ -176,7 +173,7 @@ function App() {
           .get("/api/quotes/many")
           .then((response) => {
             if (response.data.found) {
-              storeLocally(QUOTES_ARRAY_KEY, response.data.data);
+              setToLocalCache(QUOTES_ARRAY_KEY, response.data.data);
               console.log("< Updated local cache with last 50 quotes >");
             }
           })
