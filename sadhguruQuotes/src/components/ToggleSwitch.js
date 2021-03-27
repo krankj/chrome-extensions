@@ -23,18 +23,20 @@ const ToggleSwitch = ({ callback, initState }) => {
   return (
     <>
       <label
-        data-tip="Turn this on to get random quotes on every new tab"
+        data-for="toggleSwitch"
+        data-tip={
+          !checked
+            ? "Toggle on to get a random quote on every new tab"
+            : "Toggle off to get today's quote on every new tab"
+        }
         className="switch"
       >
-        <input
-          data-tip="hello world"
-          type="checkbox"
-          checked={checked}
-          onChange={handleChecked}
-        />
+        <input type="checkbox" checked={checked} onChange={handleChecked} />
         <span className="slider round"></span>
       </label>
       <ReactTooltip
+        id="toggleSwitch"
+        eventOff="click"
         place="bottom"
         delayShow={100}
         textColor="#f9f5ee"
