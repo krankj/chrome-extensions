@@ -23,8 +23,18 @@ exports.latest = async (req, res) => {
 };
 
 exports.getManyQuotes = async (req, res) => {
+  let count = parseInt(req.query.count);
+  if (!count) {
+    count = 100;
+    console.warn(`Invalid / No count value, auto setting to ${count}`);
+  } else {
+    if (count > 500)
+      return res
+        .status(400)
+        .send({ message: "Enter count value less than 500" });
+  }
   try {
-    const quotes = await QuoteModel.list(50, 0);
+    const quotes = await QuoteModel.list(Number(count), 0);
     if (quotes) return res.status(200).send({ found: true, data: quotes });
     else return res.status(404).send({ found: false, data: "No quotes found" });
   } catch (e) {
@@ -144,8 +154,7 @@ exports.autoAdd = async (req, res) => {
 
 exports.random = async (req, res) => {
   try {
-    const quotes = await QuoteModel.list(100, 0);
-    const quoteCount = quotes.length;
+    const quoteCount = await QuoteModel.getQuoteCount();
     const randomNumber = Math.floor(Math.random() * quoteCount);
     return res.status(200).send({
       data: quotes[randomNumber],

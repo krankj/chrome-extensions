@@ -29,7 +29,7 @@ let quoteSchema = new Schema(
     },
     twitterLink: {
       type: String,
-      unique: "A duplicate link already exists ({VALUE})",
+      unique: "A duplicate twitter link already exists ({VALUE})",
     },
   },
   opts
