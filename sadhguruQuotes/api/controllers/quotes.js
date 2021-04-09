@@ -34,7 +34,7 @@ exports.getManyQuotes = async (req, res) => {
         .send({ message: "Enter count value less than 500" });
   }
   try {
-    const quotes = await QuoteModel.list(Number(count), 0);
+    const quotes = await QuoteModel.list(count, 0);
     if (quotes) return res.status(200).send({ found: true, data: quotes });
     else return res.status(404).send({ found: false, data: "No quotes found" });
   } catch (e) {
