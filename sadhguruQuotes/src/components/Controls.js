@@ -7,7 +7,6 @@ import { getFromLocalCache, setToLocalCache } from "../utils/localstorage";
 import keys from "../utils/keys";
 
 const Controls = ({ randomQuoteDate, onRandomClick, onTodaysQuoteClick }) => {
-  console.log("Random quote dat is", randomQuoteDate);
   const [showTodaysQuoteButton, setShowTodaysQuoteButton] = useState(false);
   const [clickCount, setClickCount] = useState(
     getFromLocalCache(keys.TIMES_CLICKED_CACHE_KEY) || { random: 0, today: 0 }
@@ -19,12 +18,7 @@ const Controls = ({ randomQuoteDate, onRandomClick, onTodaysQuoteClick }) => {
     return today < nextTriggerDate;
   };
 
-  const checkIfTTTobeShown = () => {
-    if (clickCount.today > 5) {
-      return false;
-    }
-    return true;
-  };
+  const checkIfTTTobeShown = () => clickCount.today <= 5;
 
   const [showToolTip, setShowToolTip] = useState(() => checkIfTTTobeShown());
 
