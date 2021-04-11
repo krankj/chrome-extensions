@@ -10,6 +10,7 @@ import SideDrawer from "./components/SideDrawer";
 import classNames from "classnames";
 import ToggleSwitch from "./components/ToggleSwitch";
 import { getFromLocalCache, setToLocalCache } from "./utils/localstorage";
+import keys from "./utils/keys";
 
 const getClientIp = async () =>
   await publicIp.v4({
@@ -48,24 +49,20 @@ const quoteReducer = (state, action) => {
   }
 };
 
-const QUOTE_KEY = "sg-quote";
-const QUOTES_ARRAY_KEY = "sg-quotes-array";
-const FETCH_RANDOM_QUOTE_KEY = "sg-fetch-random-quote";
-
 const checkRandomQuotesCacheKey = () => {
-  const key = getFromLocalCache(FETCH_RANDOM_QUOTE_KEY);
+  const key = getFromLocalCache(keys.FETCH_RANDOM_QUOTE_KEY);
   if (key !== undefined) {
     return key;
   } else {
-    localStorage.setItem(FETCH_RANDOM_QUOTE_KEY, false);
+    localStorage.setItem(keys.FETCH_RANDOM_QUOTE_KEY, false);
     return false;
   }
 };
 
 function App() {
-  const storedQuote = () => getFromLocalCache(QUOTE_KEY);
+  const storedQuote = () => getFromLocalCache(keys.QUOTE_KEY);
   const storedRandomQuote = () => {
-    let storedQuotes = getFromLocalCache(QUOTES_ARRAY_KEY);
+    let storedQuotes = getFromLocalCache(keys.QUOTES_ARRAY_KEY);
     if (storedQuotes) {
       let lengthOfQuotesArray = storedQuotes.length;
       let random = Math.floor(Math.random() * lengthOfQuotesArray);
@@ -156,7 +153,7 @@ function App() {
           .get("/api/quotes/latest")
           .then((response) => {
             if (response.data.found) {
-              setToLocalCache(QUOTE_KEY, response.data.data);
+              setToLocalCache(keys.QUOTE_KEY, response.data.data);
               console.log("< Updated local cache with the latest quote >");
               dispatchQuotes({
                 type: "SUCCESS",
@@ -173,7 +170,7 @@ function App() {
           .get("/api/quotes/many")
           .then((response) => {
             if (response.data.found) {
-              setToLocalCache(QUOTES_ARRAY_KEY, response.data.data);
+              setToLocalCache(keys.QUOTES_ARRAY_KEY, response.data.data);
               console.log("< Updated local cache with last 50 quotes >");
             }
           })
@@ -232,6 +229,7 @@ function App() {
             "There is nothing wrong or right. It's just something pleasant or unplesant that has occurred. Hold tight while I make it pleasant"}
         </QuoteCard>
         <Controls
+          randomQuoteDate={quote.publishedDate}
           onTodaysQuoteClick={handleTodaysQuoteClick}
           onRandomClick={handleRandomClick}
         />

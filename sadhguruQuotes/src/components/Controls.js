@@ -4,14 +4,20 @@ import { ReactComponent as Today } from "../assets/icons/right-quote.svg";
 import "./Controls.css";
 import ReactTooltip from "react-tooltip";
 import { getFromLocalCache, setToLocalCache } from "../utils/localstorage";
+import keys from "../utils/keys";
 
-const TIMES_CLICKED_CACHE_KEY = "sg-tool-tips";
-
-const Controls = ({ onRandomClick, onTodaysQuoteClick }) => {
+const Controls = ({ randomQuoteDate, onRandomClick, onTodaysQuoteClick }) => {
+  console.log("Random quote dat is", randomQuoteDate);
   const [showTodaysQuoteButton, setShowTodaysQuoteButton] = useState(false);
   const [clickCount, setClickCount] = useState(
-    getFromLocalCache(TIMES_CLICKED_CACHE_KEY) || { random: 0, today: 0 }
+    getFromLocalCache(keys.TIMES_CLICKED_CACHE_KEY) || { random: 0, today: 0 }
   );
+  const today = new Date();
+  const checkIfTodaysQuote = () => {
+    const nextTriggerDate = new Date(randomQuoteDate);
+    nextTriggerDate.setHours(nextTriggerDate.getHours() + 24);
+    return today < nextTriggerDate;
+  };
 
   const checkIfTTTobeShown = () => {
     if (clickCount.today > 5) {
@@ -23,10 +29,13 @@ const Controls = ({ onRandomClick, onTodaysQuoteClick }) => {
   const [showToolTip, setShowToolTip] = useState(() => checkIfTTTobeShown());
 
   const updateClicks = () => {
-    setToLocalCache(TIMES_CLICKED_CACHE_KEY, clickCount);
+    setToLocalCache(keys.TIMES_CLICKED_CACHE_KEY, clickCount);
   };
 
   useEffect(() => {
+    checkIfTodaysQuote()
+      ? setShowTodaysQuoteButton(false)
+      : setShowTodaysQuoteButton(true);
     updateClicks();
     setShowToolTip(checkIfTTTobeShown());
   }, [clickCount]);
