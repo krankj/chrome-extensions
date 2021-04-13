@@ -11,6 +11,8 @@ import classNames from "classnames";
 import ToggleSwitch from "./components/ToggleSwitch";
 import { getFromLocalCache, setToLocalCache } from "./utils/localstorage";
 import keys from "./utils/keys";
+import CryptoJS from "crypto-js";
+import config from "./config";
 
 const getClientIp = async () =>
   await publicIp.v4({
@@ -44,6 +46,8 @@ const quoteReducer = (state, action) => {
       };
     case "FAILED":
       return { ...state, isLoading: false, isError: true };
+    case "ERROR":
+      return { isLoading: false, isError: true };
     default:
       throw new Error("Invalid / No action type received");
   }
@@ -60,24 +64,35 @@ const checkRandomQuotesCacheKey = () => {
 };
 
 function App() {
-  const storedQuote = () => getFromLocalCache(keys.QUOTE_KEY);
-  const storedRandomQuote = () => {
-    let storedQuotes = getFromLocalCache(keys.QUOTES_ARRAY_KEY);
-    if (storedQuotes) {
-      let lengthOfQuotesArray = storedQuotes.length;
-      let random = Math.floor(Math.random() * lengthOfQuotesArray);
-      return storedQuotes[random];
-    } else {
-      return storedQuote();
-    }
-  };
-  const storedQuoteObj = storedQuote();
-  const storedRandomQuoteVar = storedRandomQuote();
   const [quote, dispatchQuotes] = useReducer(quoteReducer, quoteInit);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [showNewQuoteOnEveryLoad, setShowNewQuoteOnEveryLoad] = useState(() =>
     checkRandomQuotesCacheKey()
   );
+  const storedQuote = () => getFromLocalCache(keys.QUOTE_KEY);
+  const storedQuoteObj = storedQuote();
+  let pkeyError = false;
+
+  const storedRandomQuote = () => {
+    const encryptedQuotes = getFromLocalCache(keys.QUOTES_ARRAY_KEY);
+    if (encryptedQuotes) {
+      try {
+        const bytes = CryptoJS.AES.decrypt(
+          encryptedQuotes,
+          config.SG_PRIVATE_KEY
+        );
+        const quotes = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+        const lengthOfQuotesArray = quotes.length;
+        const random = Math.floor(Math.random() * lengthOfQuotesArray);
+        return quotes[random];
+      } catch {
+        pkeyError = true;
+      }
+    } else {
+      return storedQuote();
+    }
+  };
+  const storedRandomQuoteVar = storedRandomQuote();
   const fetchNewQuote = useRef(true);
 
   const handleToggleSwitch = (value) => {
@@ -121,7 +136,7 @@ function App() {
       if (nextTriggerDate) {
         if (today.valueOf() <= nextTriggerDate.valueOf()) {
           if (showNewQuoteOnEveryLoad) {
-            if (storedRandomQuote) {
+            if (storedRandomQuoteVar) {
               console.log("< Retrieving a random quote from cache >");
               dispatchQuotes({
                 type: "SUCCESS",
@@ -167,7 +182,7 @@ function App() {
           });
         console.log("< Fetching many other quotes from db >");
         authAxios
-          .get("/api/quotes/many")
+          .get("/api/quotes/many?version=1.3")
           .then((response) => {
             if (response.data.found) {
               setToLocalCache(keys.QUOTES_ARRAY_KEY, response.data.data);
@@ -212,29 +227,36 @@ function App() {
 
   return (
     <div className="container">
-      <ToggleSwitch
-        callback={handleToggleSwitch}
-        initState={showNewQuoteOnEveryLoad}
-      />
-      <div className={classNames("app", { shrink: isDrawerOpen })}>
-        <QuoteCard
-          key={quote.quote}
-          publishedDate={getPublishdedDate()}
-          quoteImage={quote.imageLink}
-        >
-          {(quote.isLoading || !quote.quote) && !quote.isError
-            ? "Loading..."
-            : quote.quote}
-          {quote.isError &&
-            "There is nothing wrong or right. It's just something pleasant or unplesant that has occurred. Hold tight while I make it pleasant"}
-        </QuoteCard>
-        <Controls
-          randomQuoteDate={quote.publishedDate}
-          onTodaysQuoteClick={handleTodaysQuoteClick}
-          onRandomClick={handleRandomClick}
-        />
-        <SideDrawer isOpen={isDrawerOpen} handleDrawer={handleDrawer} />
-      </div>
+      {pkeyError ? (
+        <p>Uh! Something went wrong</p>
+      ) : (
+        <>
+          <ToggleSwitch
+            callback={handleToggleSwitch}
+            initState={showNewQuoteOnEveryLoad}
+          />
+          <div className={classNames("app", { shrink: isDrawerOpen })}>
+            <QuoteCard
+              key={quote.quote}
+              publishedDate={getPublishdedDate()}
+              quoteImage={quote.imageLink}
+            >
+              {(quote.isLoading || !quote.quote) && !quote.isError
+                ? "Loading..."
+                : quote.quote}
+              {quote.isError &&
+                "There is nothing wrong or right. It's just something pleasant or unplesant that has occurred. Hold tight while I make it pleasant"}
+            </QuoteCard>
+
+            <Controls
+              randomQuoteDate={quote.publishedDate}
+              onTodaysQuoteClick={handleTodaysQuoteClick}
+              onRandomClick={handleRandomClick}
+            />
+            <SideDrawer isOpen={isDrawerOpen} handleDrawer={handleDrawer} />
+          </div>
+        </>
+      )}
     </div>
   );
 }

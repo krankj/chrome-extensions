@@ -1,4 +1,5 @@
-.app {
+.app,
+.container {
   padding: 0 48px;
   min-height: 100vh;
   display: flex;
