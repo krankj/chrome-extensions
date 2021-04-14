@@ -34,6 +34,8 @@ const quoteReducer = (state, action) => {
   switch (action.type) {
     case "INIT_FETCH":
       return { ...state, isLoading: true };
+    case "TEST":
+      return setTimeout(() => console.log("Now i am done"), 5000);
     case "SAVE":
       return { ...state, isLoading: false };
     case "SUCCESS":
@@ -46,8 +48,6 @@ const quoteReducer = (state, action) => {
       };
     case "FAILED":
       return { ...state, isLoading: false, isError: true };
-    case "ERROR":
-      return { isLoading: false, isError: true };
     default:
       throw new Error("Invalid / No action type received");
   }
@@ -71,7 +71,6 @@ function App() {
   );
   const storedQuote = () => getFromLocalCache(keys.QUOTE_KEY);
   const storedQuoteObj = storedQuote();
-  let pkeyError = false;
 
   const storedRandomQuote = () => {
     const encryptedQuotes = getFromLocalCache(keys.QUOTES_ARRAY_KEY);
@@ -86,19 +85,20 @@ function App() {
         const random = Math.floor(Math.random() * lengthOfQuotesArray);
         return quotes[random];
       } catch {
-        pkeyError = true;
+        console.log("< Check if a valid key is used >");
+        console.log("< Clearing quotes from local cache >");
+        localStorage.removeItem(keys.QUOTE_KEY);
+        localStorage.removeItem(keys.QUOTES_ARRAY_KEY);
       }
-    } else {
-      return storedQuote();
     }
+    return storedQuoteObj;
   };
-  const storedRandomQuoteVar = storedRandomQuote();
   const fetchNewQuote = useRef(true);
 
   const handleToggleSwitch = (value) => {
     setShowNewQuoteOnEveryLoad(value);
     if (value) {
-      dispatchQuotes({ type: "SUCCESS", payload: storedRandomQuoteVar });
+      dispatchQuotes({ type: "SUCCESS", payload: storedRandomQuote() });
     } else {
       dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
     }
@@ -136,15 +136,11 @@ function App() {
       if (nextTriggerDate) {
         if (today.valueOf() <= nextTriggerDate.valueOf()) {
           if (showNewQuoteOnEveryLoad) {
-            if (storedRandomQuoteVar) {
-              console.log("< Retrieving a random quote from cache >");
-              dispatchQuotes({
-                type: "SUCCESS",
-                payload: storedRandomQuoteVar,
-              });
-            } else {
-              dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
-            }
+            console.log("< Retrieving a random quote from cache >");
+            dispatchQuotes({
+              type: "SUCCESS",
+              payload: storedRandomQuote(),
+            });
           } else {
             console.log("< Retrieving latest quote from cache >");
             dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
@@ -205,7 +201,19 @@ function App() {
   }, [quote.isLoading]);
 
   const handleRandomClick = () => {
-    dispatchQuotes({ type: "SUCCESS", payload: storedRandomQuoteVar });
+    let randomQuotes = getFromLocalCache(keys.QUOTES_ARRAY_KEY);
+    if (!randomQuotes) {
+      fetchNewQuote.current = true;
+      const myPromise = new Promise((resolve) => {
+        dispatchQuotes({ type: "TEST" });
+        resolve("done");
+      }).then((e) => {
+        console.log("This is how", e);
+        dispatchQuotes({ type: "SUCCESS", payload: storedRandomQuote() });
+      });
+    } else {
+      dispatchQuotes({ type: "SUCCESS", payload: storedRandomQuote() });
+    }
   };
 
   const handleTodaysQuoteClick = () => {
@@ -227,36 +235,30 @@ function App() {
 
   return (
     <div className="container">
-      {pkeyError ? (
-        <p>Uh! Something went wrong</p>
-      ) : (
-        <>
-          <ToggleSwitch
-            callback={handleToggleSwitch}
-            initState={showNewQuoteOnEveryLoad}
-          />
-          <div className={classNames("app", { shrink: isDrawerOpen })}>
-            <QuoteCard
-              key={quote.quote}
-              publishedDate={getPublishdedDate()}
-              quoteImage={quote.imageLink}
-            >
-              {(quote.isLoading || !quote.quote) && !quote.isError
-                ? "Loading..."
-                : quote.quote}
-              {quote.isError &&
-                "There is nothing wrong or right. It's just something pleasant or unplesant that has occurred. Hold tight while I make it pleasant"}
-            </QuoteCard>
+      <ToggleSwitch
+        callback={handleToggleSwitch}
+        initState={showNewQuoteOnEveryLoad}
+      />
+      <div className={classNames("app", { shrink: isDrawerOpen })}>
+        <QuoteCard
+          key={quote.quote}
+          publishedDate={getPublishdedDate()}
+          quoteImage={quote.imageLink}
+        >
+          {(quote.isLoading || !quote.quote) && !quote.isError
+            ? "Loading..."
+            : quote.quote}
+          {quote.isError &&
+            "There is nothing wrong or right. It's just something pleasant or unplesant that has occurred. Hold tight while I make it pleasant"}
+        </QuoteCard>
 
-            <Controls
-              randomQuoteDate={quote.publishedDate}
-              onTodaysQuoteClick={handleTodaysQuoteClick}
-              onRandomClick={handleRandomClick}
-            />
-            <SideDrawer isOpen={isDrawerOpen} handleDrawer={handleDrawer} />
-          </div>
-        </>
-      )}
+        <Controls
+          randomQuoteDate={quote.publishedDate}
+          onTodaysQuoteClick={handleTodaysQuoteClick}
+          onRandomClick={handleRandomClick}
+        />
+        <SideDrawer isOpen={isDrawerOpen} handleDrawer={handleDrawer} />
+      </div>
     </div>
   );
 }

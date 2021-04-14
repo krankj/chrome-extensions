@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import ReactTooltip from "react-tooltip";
 import "./ToggleSwitch.css";
+import keys from "../utils/keys";
 
 const ToggleSwitch = ({ callback, initState }) => {
-  const FETCH_RANDOM_QUOTE_KEY = "sg-fetch-random-quote";
-
   const [checked, setChecked] = useState(initState);
   const handleChecked = (e) => {
     setChecked(e.target.checked);
@@ -17,7 +16,7 @@ const ToggleSwitch = ({ callback, initState }) => {
       return;
     }
     callback(checked);
-    localStorage.setItem(FETCH_RANDOM_QUOTE_KEY, checked);
+    localStorage.setItem(keys.FETCH_RANDOM_QUOTE_KEY, checked);
   }, [checked]);
 
   return (
