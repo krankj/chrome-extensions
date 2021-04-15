@@ -34,8 +34,6 @@ const quoteReducer = (state, action) => {
   switch (action.type) {
     case "INIT_FETCH":
       return { ...state, isLoading: true };
-    case "TEST":
-      return setTimeout(() => console.log("Now i am done"), 5000);
     case "SAVE":
       return { ...state, isLoading: false };
     case "SUCCESS":
@@ -204,13 +202,7 @@ function App() {
     let randomQuotes = getFromLocalCache(keys.QUOTES_ARRAY_KEY);
     if (!randomQuotes) {
       fetchNewQuote.current = true;
-      const myPromise = new Promise((resolve) => {
-        dispatchQuotes({ type: "TEST" });
-        resolve("done");
-      }).then((e) => {
-        console.log("This is how", e);
-        dispatchQuotes({ type: "SUCCESS", payload: storedRandomQuote() });
-      });
+      dispatchQuotes({ type: "FETCH_INIT" });
     } else {
       dispatchQuotes({ type: "SUCCESS", payload: storedRandomQuote() });
     }
