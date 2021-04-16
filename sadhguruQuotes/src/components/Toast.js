@@ -22,8 +22,8 @@ const errorStyle = {
 const notify = (type, message, style) =>
   toast[type](message, {
     position: "bottom-center",
-    autoClose: 2500,
     style: style,
+    autoClose: 3000,
     hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
@@ -45,8 +45,6 @@ export const Toast = () => (
     closeButton={false}
     closeOnClick
     rtl={false}
-    pauseOnFocusLoss
     draggable
-    pauseOnHover
   />
 );

@@ -22,7 +22,9 @@ import {
   quotesDataSeedData,
   quotesMetaDataSeedData,
 } from "./utils/seedData";
+import { clearCache } from "./services/cleanup";
 
+clearCache();
 const getClientIp = async () =>
   await publicIp.v4({
     fallbackUrls: ["https://ifconfig.co/ip"],
@@ -158,7 +160,9 @@ function App() {
         try {
           const latestQuote = authAxios.get("/api/quotes/latest");
           console.log("< Fetching latest quote and random quotes from db >");
-          const quotesList = authAxios.get("/api/quotes/many?version=1.3");
+          const quotesList = authAxios.get("/api/quotes/many", {
+            params: { count: 200, version: 1.3 },
+          });
           const [today, list] = await Promise.all([latestQuote, quotesList]);
           console.log(
             "< Updated local cache with latest quote and random quotes >"
