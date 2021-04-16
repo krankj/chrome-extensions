@@ -1,38 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ReactComponent as Random } from "../assets/icons/refresh.svg";
 import { ReactComponent as Today } from "../assets/icons/right-quote.svg";
 import "./Controls.css";
 import ReactTooltip from "react-tooltip";
-import { getFromLocalCache, setToLocalCache } from "../utils/localstorage";
-import keys from "../utils/keys";
 
-const Controls = ({ randomQuoteDate, onRandomClick, onTodaysQuoteClick }) => {
+const Controls = ({
+  randomQuoteDate,
+  onRandomClick,
+  onTodaysQuoteClick,
+  metaData,
+}) => {
   const [showTodaysQuoteButton, setShowTodaysQuoteButton] = useState(false);
-  const [clickCount, setClickCount] = useState(
-    getFromLocalCache(keys.TIMES_CLICKED_CACHE_KEY) || { random: 0, today: 0 }
-  );
-  const today = new Date();
-  const checkIfTodaysQuote = () => {
+  const checkIfTTTobeShown = useCallback(() => metaData.clicks.today <= 5, [
+    metaData,
+  ]);
+  const [showToolTip, setShowToolTip] = useState(() => checkIfTTTobeShown());
+  const checkIfTodaysQuote = useCallback(() => {
+    const today = new Date();
     const nextTriggerDate = new Date(randomQuoteDate);
     nextTriggerDate.setHours(nextTriggerDate.getHours() + 24);
     return today < nextTriggerDate;
-  };
-
-  const checkIfTTTobeShown = () => clickCount.today <= 5;
-
-  const [showToolTip, setShowToolTip] = useState(() => checkIfTTTobeShown());
-
-  const updateClicks = () => {
-    setToLocalCache(keys.TIMES_CLICKED_CACHE_KEY, clickCount);
-  };
+  }, [randomQuoteDate]);
 
   useEffect(() => {
     checkIfTodaysQuote()
       ? setShowTodaysQuoteButton(false)
       : setShowTodaysQuoteButton(true);
-    updateClicks();
     setShowToolTip(checkIfTTTobeShown());
-  }, [clickCount]);
+  }, [checkIfTodaysQuote, checkIfTTTobeShown]);
 
   useEffect(() => {
     ReactTooltip.rebuild();
@@ -47,9 +42,6 @@ const Controls = ({ randomQuoteDate, onRandomClick, onTodaysQuoteClick }) => {
         onClick={() => {
           setShowTodaysQuoteButton(true);
           onRandomClick();
-          setClickCount((prev) => {
-            return { ...prev, random: prev.random + 1 };
-          });
         }}
       >
         <Random className="randomIcon" />
@@ -63,9 +55,6 @@ const Controls = ({ randomQuoteDate, onRandomClick, onTodaysQuoteClick }) => {
           onClick={() => {
             setShowTodaysQuoteButton(false);
             onTodaysQuoteClick();
-            setClickCount((prev) => {
-              return { ...prev, today: prev.today + 1 };
-            });
           }}
         >
           <Today className="todayIcon" />

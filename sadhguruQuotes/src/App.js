@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef, useState } from "react";
+import React, { useCallback, useEffect, useReducer, useState } from "react";
 import "./App.css";
 import QuoteCard from "./components/QuoteCard";
 import ordinal from "date-and-time/plugin/ordinal";
@@ -9,10 +9,19 @@ import publicIp from "public-ip";
 import SideDrawer from "./components/SideDrawer";
 import classNames from "classnames";
 import ToggleSwitch from "./components/ToggleSwitch";
-import { getFromLocalCache, setToLocalCache } from "./utils/localstorage";
+import { useSemiPersistentState } from "./hooks";
 import keys from "./utils/keys";
 import CryptoJS from "crypto-js";
 import config from "./config";
+import ErrorCodes from "./utils/errorCodes";
+import { Toast, notifySuccess, notifyError } from "./components/Toast";
+import "react-toastify/dist/ReactToastify.css";
+import { quoteReducer } from "./reducers";
+import {
+  quoteInitSeedData,
+  quotesDataSeedData,
+  quotesMetaDataSeedData,
+} from "./utils/seedData";
 
 const getClientIp = async () =>
   await publicIp.v4({
@@ -22,194 +31,173 @@ const getClientIp = async () =>
 date.plugin(ordinal);
 const datePattern = date.compile("MMMM DDD, YYYY");
 
-const quoteInit = {
-  quote: "",
-  publishedDate: "",
-  imageLink: "",
-  isLoading: false,
-  isError: false,
-};
-
-const quoteReducer = (state, action) => {
-  switch (action.type) {
-    case "INIT_FETCH":
-      return { ...state, isLoading: true };
-    case "SAVE":
-      return { ...state, isLoading: false };
-    case "SUCCESS":
-      return {
-        ...state,
-        quote: action.payload.quote,
-        publishedDate: action.payload.publishedDate,
-        imageLink: action.payload.imageLink,
-        isLoading: false,
-      };
-    case "FAILED":
-      return { ...state, isLoading: false, isError: true };
-    default:
-      throw new Error("Invalid / No action type received");
-  }
-};
-
-const checkRandomQuotesCacheKey = () => {
-  const key = getFromLocalCache(keys.FETCH_RANDOM_QUOTE_KEY);
-  if (key !== undefined) {
-    return key;
-  } else {
-    localStorage.setItem(keys.FETCH_RANDOM_QUOTE_KEY, false);
-    return false;
-  }
-};
-
 function App() {
-  const [quote, dispatchQuotes] = useReducer(quoteReducer, quoteInit);
+  const [quote, dispatchQuotes] = useReducer(quoteReducer, quoteInitSeedData);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [showNewQuoteOnEveryLoad, setShowNewQuoteOnEveryLoad] = useState(() =>
-    checkRandomQuotesCacheKey()
+  const [quotesData, setQuotesData] = useSemiPersistentState(
+    keys.SG_QUOTES_DATA_KEY,
+    quotesDataSeedData
   );
-  const storedQuote = () => getFromLocalCache(keys.QUOTE_KEY);
-  const storedQuoteObj = storedQuote();
+  const [quotesMetaData, setQuotesMetaData] = useSemiPersistentState(
+    keys.SG_QUOTES_METADATA_KEY,
+    quotesMetaDataSeedData
+  );
 
-  const storedRandomQuote = () => {
-    const encryptedQuotes = getFromLocalCache(keys.QUOTES_ARRAY_KEY);
-    if (encryptedQuotes) {
-      try {
-        const bytes = CryptoJS.AES.decrypt(
-          encryptedQuotes,
-          config.SG_PRIVATE_KEY
-        );
-        const quotes = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-        const lengthOfQuotesArray = quotes.length;
-        const random = Math.floor(Math.random() * lengthOfQuotesArray);
-        return quotes[random];
-      } catch {
-        console.log("< Check if a valid key is used >");
-        console.log("< Clearing quotes from local cache >");
-        localStorage.removeItem(keys.QUOTE_KEY);
-        localStorage.removeItem(keys.QUOTES_ARRAY_KEY);
-      }
+  const decryptQuotesList = useCallback((quotesList) => {
+    const encryptedQuotes = quotesList;
+    try {
+      const bytes = CryptoJS.AES.decrypt(
+        encryptedQuotes,
+        config.SG_PRIVATE_KEY
+      );
+      return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    } catch {
+      console.log("< Check if a valid key is used >");
+      console.log("< Triggering fetch from server >");
+      triggerFetchFromServer();
+      notifyError(
+        `[${ErrorCodes.INVALID_KEY}] Try again in sometime. If issue persists please contact us.`
+      );
+      throw new Error("< Could not decrypt quotes >");
     }
-    return storedQuoteObj;
-  };
-  const fetchNewQuote = useRef(true);
+  }, []);
 
-  const handleToggleSwitch = (value) => {
-    setShowNewQuoteOnEveryLoad(value);
-    if (value) {
-      dispatchQuotes({ type: "SUCCESS", payload: storedRandomQuote() });
+  const getRandomQuote = (quotesList) => {
+    const length = quotesList.length;
+    const random = Math.floor(Math.random() * length);
+    return quotesList[random];
+  };
+
+  const decryptAndDispatchRandomQuote = useCallback(() => {
+    try {
+      const quotes = decryptQuotesList(quotesData.list);
+      const randomQuote = getRandomQuote(quotes);
+      dispatchQuotes({ type: "SUCCESS", payload: randomQuote });
+    } catch (e) {
+      console.error("< Error while triggering disptach -> ", e);
+    }
+  }, [decryptQuotesList, quotesData.list]);
+
+  const triggerDispatch = useCallback(() => {
+    if (quotesMetaData.showRandomQuote) {
+      console.log("< Retrieving a random quote from cache >");
+      decryptAndDispatchRandomQuote();
     } else {
-      dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
+      console.log("< Retrieving latest quote from cache >");
+      dispatchQuotes({ type: "SUCCESS", payload: quotesData.today });
     }
-  };
+  }, [
+    quotesMetaData.showRandomQuote,
+    decryptAndDispatchRandomQuote,
+    quotesData.today,
+  ]);
+
+  const handleToggleSwitch = useCallback(
+    (value) => {
+      setQuotesMetaData((prev) => {
+        return { ...prev, showRandomQuote: value };
+      });
+    },
+    [setQuotesMetaData]
+  );
+
+  function triggerFetchFromServer() {
+    const today = new Date();
+    function triggerAutoAddOnServer() {
+      console.log("< Triggered auto add >");
+      authAxios
+        .post("/api/quotes/autoAdd", null, { params: { last: 1 } })
+        .catch((e) => {
+          notifyError(
+            `[${ErrorCodes.SERVER_ERROR_AUTO_ADD}] Server Error. If issue persists please contact us.`
+          );
+          console.error("Error occurred", e);
+        })
+        .finally(() => dispatchQuotes({ type: "INIT_FETCH" }));
+    }
+    authAxios
+      .get("/api/quotes/exists", {
+        params: { date: today.toISOString().split("T")[0] },
+      })
+      .then(() => {
+        console.log("< Latest quote already exists in db >");
+        dispatchQuotes({ type: "INIT_FETCH" });
+      })
+      .catch((e) => {
+        if (e.response && e.response.status === 404) triggerAutoAddOnServer();
+        else
+          notifyError(
+            `[${ErrorCodes.SERVER_ERROR_CHECK_IF_EXISTS}] Server Error. If issue persists please contact us.`
+          );
+      });
+  }
 
   useEffect(() => {
-    getClientIp().then((result) => console.log(`< Ip is ${result} >`));
+    if (quotesData.today) triggerDispatch();
+  }, [quotesData.today]);
 
-    //check if quote is outdated and if there exists new quote for today
-
+  useEffect(() => {
+    // getClientIp().then((result) => console.log(`< Ip is ${result} >`));
     const today = new Date();
-    function validateAndTriggerAutoAdd(today) {
-      authAxios
-        .get("/api/quotes/exists", {
-          params: { date: today.toISOString().split("T")[0] },
-        })
-        .then(() => {
-          console.log("< Latest quote already exists in db >");
-          dispatchQuotes({ type: "INIT_FETCH" });
-        })
-        .catch((e) => {
-          console.log("< Triggered auto add >");
-          authAxios
-            .post("/api/quotes/autoAdd", null, { params: { last: 1 } })
-            .catch((e) => {
-              console.error("Error occurred", e);
-            })
-            .finally(() => dispatchQuotes({ type: "INIT_FETCH" }));
-        });
-    }
-    if (storedQuoteObj) {
-      const nextTriggerDate = new Date(storedQuote().publishedDate);
-      nextTriggerDate.setHours(nextTriggerDate.getHours() + 24); // 24 is added so that 1 day post the previous published date, we start triggering the auto add api
-      //Tweets are posted exactly at 2:45 GMT. 2nd March 2:45 GMT tweet posted. Now it is, 2nd March 2:00 GMT ( or 6PM PST ). Current recorded tweet is 1st March 2:45 GMT.
-      if (nextTriggerDate) {
-        if (today.valueOf() <= nextTriggerDate.valueOf()) {
-          if (showNewQuoteOnEveryLoad) {
-            console.log("< Retrieving a random quote from cache >");
-            dispatchQuotes({
-              type: "SUCCESS",
-              payload: storedRandomQuote(),
-            });
-          } else {
-            console.log("< Retrieving latest quote from cache >");
-            dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
-          }
-          fetchNewQuote.current = false;
-          return;
-        }
+    if (quotesData.today.publishedDate) {
+      const nextTriggerDate = new Date(quotesData.today.publishedDate);
+      nextTriggerDate.setHours(nextTriggerDate.getHours() + 24);
+      //Tweets are posted exactly at 2:45 GMT everyday, so we triggger an api call only after 2:45GMT the next day
+      if (today.valueOf() <= nextTriggerDate.valueOf()) {
+        return;
       }
     } else {
-      console.log("< Local cache is empty >");
+      console.log("< Local cache is empty / has invalid data >");
     }
-    validateAndTriggerAutoAdd(today);
-  }, []);
+    triggerFetchFromServer();
+  }, [quotesData.today.publishedDate]);
 
   useEffect(() => {
     if (quote.isLoading) {
-      if (fetchNewQuote.current) {
-        fetchNewQuote.current = false;
-        console.log("< Fetching latest quote from db >");
-        authAxios
-          .get("/api/quotes/latest")
-          .then((response) => {
-            if (response.data.found) {
-              setToLocalCache(keys.QUOTE_KEY, response.data.data);
-              console.log("< Updated local cache with the latest quote >");
-              dispatchQuotes({
-                type: "SUCCESS",
-                payload: response.data.data,
-              });
-            }
-          })
-          .catch((e) => {
-            console.error("Error is", e);
-            dispatchQuotes({ type: "FAILED" });
+      async function fetchQuotes() {
+        try {
+          const latestQuote = authAxios.get("/api/quotes/latest");
+          console.log("< Fetching latest quote and random quotes from db >");
+          const quotesList = authAxios.get("/api/quotes/many?version=1.3");
+          const [today, list] = await Promise.all([latestQuote, quotesList]);
+          console.log(
+            "< Updated local cache with latest quote and random quotes >"
+          );
+          setQuotesData({
+            today: today.data.data,
+            list: list.data.data,
           });
-        console.log("< Fetching many other quotes from db >");
-        authAxios
-          .get("/api/quotes/many?version=1.3")
-          .then((response) => {
-            if (response.data.found) {
-              setToLocalCache(keys.QUOTES_ARRAY_KEY, response.data.data);
-              console.log("< Updated local cache with last 50 quotes >");
-            }
-          })
-          .catch((e) => {
-            console.error("Error is", e);
-          });
+          notifySuccess("* New quote added *");
+        } catch (e) {
+          notifyError(
+            `[${ErrorCodes.SERVER_ERROR_FETCH}] Server Error. If issue persists please contact us.`
+          );
+          console.error("Error is", e);
+          dispatchQuotes({ type: "FAILED" });
+        }
       }
-      //else {
-      //   authAxios
-      //     .get("/api/quotes/random")
-      //     .then((response) =>
-      //       dispatchQuotes({ type: "SUCCESS", payload: response.data.data })
-      //     )
-      //     .catch((e) => console.log("Error occurred", e));
-      // }
+      fetchQuotes();
     }
-  }, [quote.isLoading]);
+  }, [quote.isLoading, setQuotesData]);
 
   const handleRandomClick = () => {
-    let randomQuotes = getFromLocalCache(keys.QUOTES_ARRAY_KEY);
-    if (!randomQuotes) {
-      fetchNewQuote.current = true;
-      dispatchQuotes({ type: "FETCH_INIT" });
-    } else {
-      dispatchQuotes({ type: "SUCCESS", payload: storedRandomQuote() });
-    }
+    setQuotesMetaData((prev) => {
+      return {
+        ...prev,
+        clicks: { today: prev.clicks.today, random: prev.clicks.random + 1 },
+      };
+    });
+    decryptAndDispatchRandomQuote();
   };
 
   const handleTodaysQuoteClick = () => {
-    dispatchQuotes({ type: "SUCCESS", payload: storedQuoteObj });
+    setQuotesMetaData((prev) => {
+      return {
+        ...prev,
+        clicks: { today: prev.clicks.today + 1, random: prev.clicks.random },
+      };
+    });
+    dispatchQuotes({ type: "SUCCESS", payload: quotesData.today });
   };
 
   const getPublishdedDate = () => {
@@ -229,7 +217,7 @@ function App() {
     <div className="container">
       <ToggleSwitch
         callback={handleToggleSwitch}
-        initState={showNewQuoteOnEveryLoad}
+        initState={quotesMetaData.showRandomQuote}
       />
       <div className={classNames("app", { shrink: isDrawerOpen })}>
         <QuoteCard
@@ -248,8 +236,10 @@ function App() {
           randomQuoteDate={quote.publishedDate}
           onTodaysQuoteClick={handleTodaysQuoteClick}
           onRandomClick={handleRandomClick}
+          metaData={quotesMetaData}
         />
         <SideDrawer isOpen={isDrawerOpen} handleDrawer={handleDrawer} />
+        <Toast />
       </div>
     </div>
   );

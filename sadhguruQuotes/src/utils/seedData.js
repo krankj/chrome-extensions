@@ -1,0 +1,21 @@
+module.exports = {
+  quoteInitSeedData: {
+    quote: "",
+    publishedDate: "",
+    imageLink: "",
+    isLoading: false,
+    isError: false,
+  },
+  quotesDataSeedData: {
+    today: "",
+    list: "",
+  },
+  quotesMetaDataSeedData: {
+    clicks: {
+      today: 0,
+      random: 0,
+    },
+    showRandomQuote: false,
+    version: 1.3,
+  },
+};
