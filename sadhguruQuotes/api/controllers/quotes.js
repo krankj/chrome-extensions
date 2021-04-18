@@ -108,7 +108,7 @@ async function getQuotesFromTwitter(pastDays) {
 }
 
 exports.quoteExists = async (req, res) => {
-  const dateInput = req.query.date;
+  let dateInput = req.query.date.concat("T01:45:00.000Z");
   if (!dateInput) return res.status(400).send({ message: "No date mentioned" });
   const dateObj = new Date(dateInput);
   try {

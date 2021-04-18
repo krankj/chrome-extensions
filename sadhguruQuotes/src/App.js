@@ -105,18 +105,29 @@ function App() {
 
   function triggerFetchFromServer() {
     const today = new Date();
+    today.setMinutes(today.getMinutes() - 165);
+    /*toISOString() automatically takes care of converting time to UTC. 165 (2h45m) is subtracted since every day quotes are added at 2:45UTC
+    This will make sure that the client asks for the latest quote only when it is the right time for it. Otherwise, if anyone would install in those 2:45 mins span would
+    unnecessarily trigger this autoAdd api since the client would not have accounted for these 165 mins, although it takes care of converting time to UTC.*/
     function triggerAutoAddOnServer() {
       console.log("< Triggered auto add >");
       authAxios
         .post("/api/quotes/autoAdd", null, { params: { last: 1 } })
         .catch((e) => {
-          notifyError(
-            `[${ErrorCodes.SERVER_ERROR_AUTO_ADD}] Server Error. If issue persists please contact us.`
-          );
-          console.error("Error occurred", e);
+          if (e.response && e.response.status === 409) {
+            console.log(
+              "< Auto add was not performed since latest quote had already been added > "
+            );
+          } else {
+            notifyError(
+              `[${ErrorCodes.SERVER_ERROR_AUTO_ADD}] Server Error. If issue persists please contact us.`
+            );
+            console.error("Error occurred", e);
+          }
         })
         .finally(() => dispatchQuotes({ type: "INIT_FETCH" }));
     }
+    console.log("Current", today.toISOString().split("T")[0]);
     authAxios
       .get("/api/quotes/exists", {
         params: { date: today.toISOString().split("T")[0] },

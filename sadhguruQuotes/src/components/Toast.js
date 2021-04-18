@@ -1,50 +1,22 @@
 import React from "react";
 import { Slide, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "./Toast.css";
 
-const commonStyle = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  textAlign: "center",
-  fontSize: "calc(8px + 1vmin)",
-  fontFamily: "Sadhguru Thin",
-  padding: "6px",
-  backgroundColor: "rgb(138, 70, 6)",
-};
+const notify = (type, message) => toast[type](message);
 
-const successStyle = { ...commonStyle };
+export const notifySuccess = (message) => notify("success", message);
 
-const errorStyle = {
-  ...commonStyle,
-};
-
-const notify = (type, message, style) =>
-  toast[type](message, {
-    position: "bottom-center",
-    style: style,
-    autoClose: 3000,
-    hideProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-  });
-
-export const notifySuccess = (message) =>
-  notify("success", message, successStyle);
-
-export const notifyError = (message) => notify("error", message, errorStyle);
+export const notifyError = (message) => notify("error", message);
 
 export const Toast = () => (
   <ToastContainer
     transition={Slide}
-    position="bottom-center"
     hideProgressBar
-    newestOnTop={false}
-    closeButton={false}
-    closeOnClick
-    rtl={false}
-    draggable
+    position="bottom-center"
+    autoClose={3000}
+    pauseOnFocusLoss={false}
+    limit={3}
+    newestOnTop={true}
   />
 );
