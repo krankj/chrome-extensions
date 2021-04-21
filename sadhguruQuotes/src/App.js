@@ -164,7 +164,7 @@ function App() {
           const latestQuote = authAxios.get("/api/quotes/latest");
           console.log("< Fetching latest quote and random quotes from db >");
           const quotesList = authAxios.get("/api/quotes/many", {
-            params: { count: 200, version: 1.4 },
+            params: { count: 200, version: 1.5 },
           });
           const [today, list] = await Promise.all([latestQuote, quotesList]);
           console.log(
