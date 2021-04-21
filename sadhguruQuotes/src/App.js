@@ -127,7 +127,6 @@ function App() {
         })
         .finally(() => dispatchQuotes({ type: "INIT_FETCH" }));
     }
-    console.log("Current", today.toISOString().split("T")[0]);
     authAxios
       .get("/api/quotes/exists", {
         params: { date: today.toISOString().split("T")[0] },
@@ -146,22 +145,15 @@ function App() {
   }
 
   useEffect(() => {
-    if (quotesData.today) triggerDispatch();
-  }, [quotesData.today]);
-
-  useEffect(() => {
     // getClientIp().then((result) => console.log(`< Ip is ${result} >`));
     const today = new Date();
     if (quotesData.today.publishedDate) {
       const nextTriggerDate = new Date(quotesData.today.publishedDate);
       nextTriggerDate.setHours(nextTriggerDate.getHours() + 24);
       //Tweets are posted exactly at 2:45 GMT everyday, so we triggger an api call only after 2:45GMT the next day
-      if (today.valueOf() <= nextTriggerDate.valueOf()) {
-        return;
-      }
-    } else {
-      console.log("< Local cache is empty / has invalid data >");
-    }
+      if (today.valueOf() <= nextTriggerDate.valueOf()) return;
+    } else console.log("< Local cache is empty / has invalid data >");
+
     triggerFetchFromServer();
   }, [quotesData.today.publishedDate]);
 
@@ -172,7 +164,7 @@ function App() {
           const latestQuote = authAxios.get("/api/quotes/latest");
           console.log("< Fetching latest quote and random quotes from db >");
           const quotesList = authAxios.get("/api/quotes/many", {
-            params: { count: 200, version: 1.3 },
+            params: { count: 200, version: 1.4 },
           });
           const [today, list] = await Promise.all([latestQuote, quotesList]);
           console.log(
@@ -194,6 +186,11 @@ function App() {
       fetchQuotes();
     }
   }, [quote.isLoading, setQuotesData]);
+
+  /* The following effect is triggered only once when the new quote had been added */
+  useEffect(() => {
+    if (quotesData.today) triggerDispatch();
+  }, [quotesData.today]);
 
   const handleRandomClick = () => {
     setQuotesMetaData((prev) => {
