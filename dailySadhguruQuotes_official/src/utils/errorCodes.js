@@ -1,0 +1,9 @@
+const ErrorCodes = {
+  INVALID_KEY: "CL01",
+  SERVER_ERROR_CHECK_IF_EXISTS: "SR02",
+  SERVER_ERROR_AUTO_ADD: "SR03",
+  SERVER_ERROR_FETCH: "SR04",
+  UNKONWN_ERROR: "UN05",
+};
+
+export default ErrorCodes;
