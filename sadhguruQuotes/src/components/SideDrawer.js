@@ -10,12 +10,12 @@ import getVersion from "../utils/version";
 
 const SideDrawer = ({ isOpen, handleDrawer }) => {
   const [version, setVersion] = useState("1.6");
-  // useEffect(() => {
-  //   (async function () {
-  //     let v = await getVersion();
-  //     setVersion(v);
-  //   })();
-  // }, []);
+  useEffect(() => {
+    (async function () {
+      let v = await getVersion();
+      setVersion(v);
+    })();
+  }, []);
   return (
     <div>
       <span
