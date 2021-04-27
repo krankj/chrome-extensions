@@ -26,7 +26,6 @@ exports.latest = async (req, res) => {
 
 exports.getManyQuotes = async (req, res) => {
   let count = parseInt(req.query.count);
-  let version = Number(req.query.version);
   if (!count) {
     count = 100;
     console.warn(`Invalid / No count value, auto setting to ${count}`);
@@ -38,7 +37,7 @@ exports.getManyQuotes = async (req, res) => {
   }
   try {
     const quotes = await QuoteModel.list(count, 0);
-    if (version > 1.2) {
+    if (quotes) {
       const currentEnv = process.env.SG_QUOTES_ENV;
       let privateKey = config[currentEnv].SG_PRIVATE_KEY;
       var encryptedQuotes = CryptoJS.AES.encrypt(
@@ -46,9 +45,8 @@ exports.getManyQuotes = async (req, res) => {
         privateKey
       ).toString();
       return res.status(200).send({ found: true, data: encryptedQuotes });
-    }
-    if (quotes) return res.status(200).send({ found: true, data: quotes });
-    else return res.status(404).send({ found: false, data: "No quotes found" });
+    } else
+      return res.status(404).send({ found: false, data: "No quotes found" });
   } catch (e) {
     return res.status(500).send({ error: "Internal error: " + e });
   }

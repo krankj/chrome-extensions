@@ -1,7 +1,7 @@
 {
   "name": "Daily Sadhguru Quotes",
   "description" : "Remind yourselves to the deep wisdom provided by Sadhguru on every New Tab. New quotes every day at 2:45 GMT",
-  "version": "1.5",
+  "version": "1.6",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
@@ -9,11 +9,6 @@
   "chrome_url_overrides" : {
     "newtab": "index.html"
   },
-  "permissions": [
-    "topSites",
-    "activeTab",
-    "storage"
-  ],
   "author": "Sudarshan: kjsudi@gmail.com",
   "action": {
     "default_icon": {"16" :"sg-icon-16x16.png", "48": "sg-icon-48x48.png", "128" : "sg-icon-128x128.png"},

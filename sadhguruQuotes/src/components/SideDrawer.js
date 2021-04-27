@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./SideDrawer.css";
 import classNames from "classnames";
 import SocialIcons from "./SocialIcons";
@@ -6,8 +6,16 @@ import { ReactComponent as ClockIcon } from "../assets/icons/wall-clock.svg";
 import { ReactComponent as ContentIcon } from "../assets/icons/content.svg";
 import { ReactComponent as MadeIcon } from "../assets/icons/tools.svg";
 import { ReactComponent as InfoIcon } from "../assets/icons/information.svg";
+import getVersion from "../utils/version";
 
 const SideDrawer = ({ isOpen, handleDrawer }) => {
+  const [version, setVersion] = useState("1.6");
+  // useEffect(() => {
+  //   (async function () {
+  //     let v = await getVersion();
+  //     setVersion(v);
+  //   })();
+  // }, []);
   return (
     <div>
       <span
@@ -50,6 +58,7 @@ const SideDrawer = ({ isOpen, handleDrawer }) => {
             <p>+919686678568</p>
             <SocialIcons />
           </div>
+          <span className="version">v{version}</span>
         </div>
       </div>
     </div>
