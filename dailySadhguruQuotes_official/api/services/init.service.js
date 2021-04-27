@@ -1,5 +1,4 @@
-const log4j = require("log4js");
-const logger = log4j.getLogger();
+const logger = require("log4js").getLogger();
 logger.level = "debug";
 const envConfig = require("../config/env.config");
 
