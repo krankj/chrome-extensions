@@ -23,13 +23,12 @@ import {
   quotesDataSeedData,
   quotesMetaDataSeedData,
 } from "./utils/seedData";
-import { clearCache } from "./services/cleanup";
+import { readData } from "./test";
 
-clearCache();
-const getClientIp = async () =>
-  await publicIp.v4({
-    fallbackUrls: ["https://ifconfig.co/ip"],
-  });
+// const getClientIp = async () =>
+//   await publicIp.v4({
+//     fallbackUrls: ["https://ifconfig.co/ip"],
+//   });
 
 date.plugin(ordinal);
 const datePattern = date.compile("MMMM DDD, YYYY");
@@ -45,7 +44,6 @@ function App() {
     keys.SG_QUOTES_METADATA_KEY,
     quotesMetaDataSeedData
   );
-  const [url, setUrl] = useState("");
 
   const decryptQuotesList = useCallback((quotesList) => {
     const encryptedQuotes = quotesList;
@@ -106,44 +104,7 @@ function App() {
   );
 
   function triggerFetchFromServer() {
-    const today = new Date();
-    today.setMinutes(today.getMinutes() - 165);
-    /*toISOString() automatically takes care of converting time to UTC. 165 (2h45m) is subtracted since every day quotes are added at 2:45UTC
-    This will make sure that the client asks for the latest quote only when it is the right time for it. Otherwise, if anyone would install in those 2:45 mins span would
-    unnecessarily trigger this autoAdd api since the client would not have accounted for these 165 mins, although it takes care of converting time to UTC.*/
-    function triggerAutoAddOnServer() {
-      console.log("< Triggered auto add >");
-      authAxios
-        .post("/api/quotes/autoAdd", null, { params: { last: 1 } })
-        .catch((e) => {
-          if (e.response && e.response.status === 409) {
-            console.log(
-              "< Auto add was not performed since latest quote had already been added > "
-            );
-          } else {
-            notifyError(
-              `[${ErrorCodes.SERVER_ERROR_AUTO_ADD}] Server Error. If issue persists please contact us.`
-            );
-            console.error("Error occurred", e);
-          }
-        })
-        .finally(() => dispatchQuotes({ type: "INIT_FETCH" }));
-    }
-    authAxios
-      .get("/api/quotes/exists", {
-        params: { date: today.toISOString().split("T")[0] },
-      })
-      .then(() => {
-        console.log("< Latest quote already exists in db >");
-        dispatchQuotes({ type: "INIT_FETCH" });
-      })
-      .catch((e) => {
-        if (e.response && e.response.status === 404) triggerAutoAddOnServer();
-        else
-          notifyError(
-            `[${ErrorCodes.SERVER_ERROR_CHECK_IF_EXISTS}] Server Error. If issue persists please contact us.`
-          );
-      });
+    dispatchQuotes({ type: "INIT_FETCH" });
   }
 
   useEffect(() => {
@@ -151,35 +112,47 @@ function App() {
     const today = new Date();
     if (quotesData.today.publishedDate) {
       const nextTriggerDate = new Date(quotesData.today.publishedDate);
-      nextTriggerDate.setHours(nextTriggerDate.getHours() + 24);
+      nextTriggerDate.setMinutes(nextTriggerDate.getMinutes() + 1455); //24hr = 1440 + 15min(buffer)
       //Tweets are posted exactly at 2:45 GMT everyday, so we triggger an api call only after 2:45GMT the next day
-      if (today.valueOf() <= nextTriggerDate.valueOf()) return;
+      if (today.valueOf() <= nextTriggerDate.valueOf()) {
+        console.log("Next trigger date is", nextTriggerDate);
+        triggerDispatch();
+        return;
+      }
     } else console.log("< Local cache is empty / has invalid data >");
 
+    console.log("triggering fetch from server");
     triggerFetchFromServer();
-  }, [quotesData.today.publishedDate]);
+  }, []);
 
   useEffect(() => {
     if (quote.isLoading) {
       async function fetchQuotes() {
         try {
-          const latestQuote = authAxios.get("/api/quotes/latest");
           console.log("< Fetching latest quote and random quotes from db >");
-          const quotesList = authAxios.get("/api/quotes/many", {
-            params: { count: 200, version: 1.5 },
-          });
-          const [today, list] = await Promise.all([latestQuote, quotesList]);
+          console.time("dynamo");
+          const response = await readData(11111);
+          console.timeEnd("dynamo");
+          const data = response.Items[0];
+          const today = {
+            imageLink: data.imageLink,
+            twitterLink: data.twitterLink,
+            quote: data.quote,
+            publishedDate: data.publishedDate,
+          };
+          const random = data.randomQuotesList;
           console.log(
             "< Updated local cache with latest quote and random quotes >"
           );
           setQuotesData({
-            today: today.data.data,
-            list: list.data.data,
+            today,
+            list: random,
           });
+          dispatchQuotes({ type: "SUCCESS", payload: today });
           notifySuccess("* New quote added *");
         } catch (e) {
           notifyError(
-            `[${ErrorCodes.SERVER_ERROR_FETCH}] Server Error. If issue persists please contact us.`
+            `[${ErrorCodes.FETCH_ERROR}] Server Error. If issue persists please contact us.`
           );
           console.error("Error is", e);
           dispatchQuotes({ type: "FAILED" });
@@ -192,11 +165,6 @@ function App() {
   // useEffect(() => {
   //   chrome && chrome.topSites.get((r) => console.log(r));
   // }, []);
-
-  /* The following effect is triggered only once when the new quote had been added */
-  useEffect(() => {
-    if (quotesData.today) triggerDispatch();
-  }, [quotesData.today]);
 
   const handleRandomClick = () => {
     setQuotesMetaData((prev) => {
@@ -256,7 +224,6 @@ function App() {
           onRandomClick={handleRandomClick}
           metaData={quotesMetaData}
         />
-        <h1>URLokk: {url}</h1>
         <SideDrawer isOpen={isDrawerOpen} handleDrawer={handleDrawer} />
         <Toast />
       </div>

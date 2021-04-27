@@ -8,7 +8,6 @@ require("./services/init.service");
 // autoAdd();
 // logger.info("Added latest quote");
 
-console.log("Get bi year: ", getBiYear(new Date()));
 (async function () {
   logger.info("MAIN...Fetching random quotes");
   await fetchAndAdd();
