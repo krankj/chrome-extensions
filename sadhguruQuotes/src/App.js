@@ -23,13 +23,11 @@ import {
   quotesDataSeedData,
   quotesMetaDataSeedData,
 } from "./utils/seedData";
-import { clearCache } from "./services/cleanup";
 
-clearCache();
-const getClientIp = async () =>
-  await publicIp.v4({
-    fallbackUrls: ["https://ifconfig.co/ip"],
-  });
+// const getClientIp = async () =>
+//   await publicIp.v4({
+//     fallbackUrls: ["https://ifconfig.co/ip"],
+//   });
 
 date.plugin(ordinal);
 const datePattern = date.compile("MMMM DDD, YYYY");
@@ -45,7 +43,6 @@ function App() {
     keys.SG_QUOTES_METADATA_KEY,
     quotesMetaDataSeedData
   );
-  const [url, setUrl] = useState("");
 
   const decryptQuotesList = useCallback((quotesList) => {
     const encryptedQuotes = quotesList;
@@ -153,11 +150,14 @@ function App() {
       const nextTriggerDate = new Date(quotesData.today.publishedDate);
       nextTriggerDate.setHours(nextTriggerDate.getHours() + 24);
       //Tweets are posted exactly at 2:45 GMT everyday, so we triggger an api call only after 2:45GMT the next day
-      if (today.valueOf() <= nextTriggerDate.valueOf()) return;
+      if (today.valueOf() <= nextTriggerDate.valueOf()) {
+        triggerDispatch();
+        return;
+      }
     } else console.log("< Local cache is empty / has invalid data >");
 
     triggerFetchFromServer();
-  }, [quotesData.today.publishedDate]);
+  }, []);
 
   useEffect(() => {
     if (quote.isLoading) {
@@ -176,6 +176,7 @@ function App() {
             today: today.data.data,
             list: list.data.data,
           });
+          dispatchQuotes({ type: "SUCCESS", payload: today.data.data });
           notifySuccess("* New quote added *");
         } catch (e) {
           notifyError(
@@ -192,11 +193,6 @@ function App() {
   // useEffect(() => {
   //   chrome && chrome.topSites.get((r) => console.log(r));
   // }, []);
-
-  /* The following effect is triggered only once when the new quote had been added */
-  useEffect(() => {
-    if (quotesData.today) triggerDispatch();
-  }, [quotesData.today]);
 
   const handleRandomClick = () => {
     setQuotesMetaData((prev) => {
@@ -256,7 +252,6 @@ function App() {
           onRandomClick={handleRandomClick}
           metaData={quotesMetaData}
         />
-        <h1>URLokk: {url}</h1>
         <SideDrawer isOpen={isDrawerOpen} handleDrawer={handleDrawer} />
         <Toast />
       </div>
