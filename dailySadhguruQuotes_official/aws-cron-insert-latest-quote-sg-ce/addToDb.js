@@ -85,7 +85,6 @@ exports.fetchAndAdd = async () => {
       }
       try {
         await insertEncryptedRandomQuotes(latestQuote);
-        logger.info("[ *Inserted random encrypted quotes to database* ]");
       } catch (e) {
         logger.error(
           "[ Could not add encrypted random quotes. Contact ADMIN ]",
@@ -119,6 +118,7 @@ const insertEncryptedRandomQuotes = async (latestQuote) => {
       privateKey
     ).toString();
     await insertDataWithRandomQuotes(latestQuote, encryptedQuotes);
+    logger.info("[ *Inserted random encrypted quotes to database* ]");
   } catch (e) {
     logger.error(
       "Something went wrong while inserting encrypted random quotes",

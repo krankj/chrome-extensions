@@ -56,7 +56,6 @@ exports.insertData = (data) => {
       ":b": biYear,
       ":p": data.publishedDate,
     },
-    ReturnValues: "ALL_OLD",
   };
   return insert(params, "DAILY");
 };
@@ -95,7 +94,6 @@ exports.insertDataWithRandomQuotes = async (quoteData, randomQuotesList) => {
       quote: quoteData.quote,
       randomQuotesList,
     },
-    ReturnValues: "ALL_OLD",
   };
   if (data.Items.length === 1) {
     await deleteItem(data.Items[0].publishedDate);
