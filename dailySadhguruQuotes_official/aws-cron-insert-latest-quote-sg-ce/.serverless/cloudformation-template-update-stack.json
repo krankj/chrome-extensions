@@ -207,7 +207,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/aws-cron-insert-latest-quote-sg-ce/dev/1619623034922-2021-04-28T15:17:14.922Z/aws-cron-insert-latest-quote-sg-ce.zip"
+          "S3Key": "serverless/aws-cron-insert-latest-quote-sg-ce/dev/1619623623038-2021-04-28T15:27:03.038Z/aws-cron-insert-latest-quote-sg-ce.zip"
         },
         "Handler": "s_cronHandler.handler",
         "Runtime": "nodejs12.x",
@@ -225,20 +225,20 @@
         "CronHandlerLogGroup"
       ]
     },
-    "CronHandlerLambdaVersionVRJf4sozZBL8j9F6metJ6wdEu1sRmlBnX8hLKAnAg": {
+    "CronHandlerLambdaVersioneQ9FJgNRWhYfjTrfp49yD4SpocxP2HGlPi5ub1Mfs": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "CronHandlerLambdaFunction"
         },
-        "CodeSha256": "vosIdJCYtJZ7VtBB1WuyCroIizOLB4lX4u8Ih8fTCnc="
+        "CodeSha256": "8+/8zJVL3zqs5KTAbnjwkLNWcqdvXKyLYo4M9rMqZhI="
       }
     },
     "CronHandlerEventsRuleSchedule1": {
       "Type": "AWS::Events::Rule",
       "Properties": {
-        "ScheduleExpression": "cron(45 2 * * ? *)",
+        "ScheduleExpression": "cron(46 2 * * ? *)",
         "State": "ENABLED",
         "Targets": [
           {
@@ -275,7 +275,7 @@
     "CloudWatchLogsSubscriptionFilterCronHandlerLogGroup": {
       "Type": "AWS::Logs::SubscriptionFilter",
       "Properties": {
-        "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:b690bc0c-44eb-4187-9ae4-6787abc9ba12#dqrvXvtV1tLNP73Hl3#aws-cron-insert-latest-quote-sg-ce#dev",
+        "DestinationArn": "arn:aws:logs:ap-south-1:802587217904:destination:b690bc0c-44eb-4187-9ae4-6787abc9ba12#dqrvXvtV1tLNP73Hl3#aws-cron-insert-latest-quote-sg-ce#dev",
         "FilterPattern": "?\"REPORT RequestId: \" ?\"SERVERLESS_ENTERPRISE\"",
         "LogGroupName": {
           "Ref": "CronHandlerLogGroup"
@@ -306,7 +306,7 @@
     "CronHandlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "CronHandlerLambdaVersionVRJf4sozZBL8j9F6metJ6wdEu1sRmlBnX8hLKAnAg"
+        "Ref": "CronHandlerLambdaVersioneQ9FJgNRWhYfjTrfp49yD4SpocxP2HGlPi5ub1Mfs"
       },
       "Export": {
         "Name": "sls-aws-cron-insert-latest-quote-sg-ce-dev-CronHandlerLambdaFunctionQualifiedArn"
