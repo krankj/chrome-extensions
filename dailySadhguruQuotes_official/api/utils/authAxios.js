@@ -1,11 +1,13 @@
 const axios = require("axios");
+const config = require("../config/env.config");
 
 exports.twitterSearchApi = axios.create({
   baseURL:
     "https://api.twitter.com/2/tweets/search/recent?query=from:SadhguruJV %23SadhguruQuotes -is:retweet has:hashtags",
   timeout: 5000,
   headers: {
-    Authorization:
-      "Bearer AAAAAAAAAAAAAAAAAAAAAGe9MgEAAAAAzHALa2rBRY95754h9RmeSQYNATw%3DCklMUtbV2CWhkwEqSeK12cmyIoqlmZFEpkEWZocfUId9VTALY9",
+    Authorization: `Bearer ${
+      process.env[config.envVars.SG_TWITTER_AUTH_KEY_VAR]
+    }`,
   },
 });

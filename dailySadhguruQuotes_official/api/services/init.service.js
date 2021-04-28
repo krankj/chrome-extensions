@@ -7,7 +7,7 @@ const envVarNotSet = (envVariable) => {
 };
 
 const callExit = () => {
-  logger.info("Exiting process");
+  logger.warn("***Exiting process***");
   process.exit(1);
 };
 
@@ -27,15 +27,24 @@ const checkEnv = () => {
   }
 };
 
+const checkTwitterAuthKey = () => {
+  const twtrAuthKey = process.env[envConfig.envVars.SG_TWITTER_AUTH_KEY_VAR];
+  if (!twtrAuthKey) {
+    envVarNotSet(envConfig.envVars.SG_TWITTER_AUTH_KEY_VAR);
+    callExit();
+  }
+};
+
 const checkEnvVars = () => {
   checkEnv();
   checkPrivateKeyEnv();
+  checkTwitterAuthKey();
 };
 
 const preCheckAppConfig = () => {
-  logger.debug("Performing app config pre check");
+  logger.debug("< Performing App config PRE-CHECK >");
   checkEnvVars();
-  logger.debug("App pre check successful");
+  logger.debug("< App config PRE-CHECK successful >");
 };
 
 preCheckAppConfig();

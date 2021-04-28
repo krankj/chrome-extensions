@@ -9,33 +9,36 @@ function insert(params, type) {
   return new Promise((res, rej) => {
     docClient.put(params, function (err, data) {
       if (err) {
-        logger.error(`[${type}] Could not add quote. Error -> ${err}`);
         rej(err);
       } else {
         res(data);
-        logger.info(
-          ` [${type}] Succesfully inserted data:`,
-          data.publishedDate
-        );
+        logger.info(`[${type}] Succesfully inserted data`);
       }
     });
   });
 }
 
-exports.insertDataWithRandomQuotes = (quoteData, randomQuotesList) => {
+function deleteItem(publishedDate) {
   let params = {
     TableName: tableName,
-    Item: {
+    Key: {
       biYear: 11111,
-      publishedDate: quoteData.publishedDate,
-      imageLink: quoteData.imageLink,
-      twitterLink: quoteData.twitterLink,
-      quote: quoteData.quote,
-      randomQuotesList,
+      publishedDate: publishedDate,
     },
   };
-  return insert(params, "BULK");
-};
+
+  return new Promise((resolve, reject) => {
+    docClient.delete(params, function (err, data) {
+      if (err) {
+        logger.error("Deleting item error", JSON.stringify(err, null, 2));
+        reject(err);
+      } else {
+        logger.info("[ Deleted last item from index 11111 ]");
+        resolve(data);
+      }
+    });
+  });
+}
 
 exports.insertData = (data) => {
   let biYear = getBiYear(data.publishedDate);
@@ -53,11 +56,12 @@ exports.insertData = (data) => {
       ":b": biYear,
       ":p": data.publishedDate,
     },
+    ReturnValues: "ALL_OLD",
   };
   return insert(params, "DAILY");
 };
 
-exports.readData = (key) => {
+function readData(key) {
   let params = {
     TableName: tableName,
     KeyConditionExpression: "biYear = :by",
@@ -75,4 +79,26 @@ exports.readData = (key) => {
       }
     });
   });
+}
+
+exports.readData = readData;
+
+exports.insertDataWithRandomQuotes = async (quoteData, randomQuotesList) => {
+  let data = await readData(11111);
+  let params = {
+    TableName: tableName,
+    Item: {
+      biYear: 11111,
+      publishedDate: quoteData.publishedDate,
+      imageLink: quoteData.imageLink,
+      twitterLink: quoteData.twitterLink,
+      quote: quoteData.quote,
+      randomQuotesList,
+    },
+    ReturnValues: "ALL_OLD",
+  };
+  if (data.Items.length === 1) {
+    await deleteItem(data.Items[0].publishedDate);
+  }
+  return insert(params, "BULK");
 };

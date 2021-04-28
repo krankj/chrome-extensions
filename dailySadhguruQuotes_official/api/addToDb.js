@@ -69,21 +69,28 @@ exports.fetchAndAdd = async () => {
   try {
     const quotes = await getQuotesFromTwitter(last);
     if (quotes) {
-      logger.info("Retrieved quotes from twitter", quotes);
       let latestQuote = quotes[0];
       checkIfValidFieldsExist(latestQuote);
       try {
-        console.log("Latest quote is", latestQuote);
-        let quote = await insertData(latestQuote);
-        logger.info("Inserted latest quote to database: ", quote);
+        logger.info(" [ Latest quote retrieved ] => ", latestQuote);
+        await insertData(latestQuote);
+        logger.info("[ *Inserted latest quote to database* ]");
       } catch (e) {
-        logger.error("CATCH ERROR Could not add latest quote", e);
+        if (e.statusCode === 400)
+          logger.warn("[ Latest quote already exists in DB ]");
+        else
+          logger.error(
+            "[ Something went wrong while inserting latest quote. Contact ADMIN ]"
+          );
       }
       try {
-        let randomQuotes = await insertEncryptedRandomQuotes(latestQuote);
-        logger.info("Inserted random quotes to databse: ", randomQuotes);
+        await insertEncryptedRandomQuotes(latestQuote);
+        logger.info("[ *Inserted random encrypted quotes to database* ]");
       } catch (e) {
-        logger.error("Caught Error. Could not add random quotes", e);
+        logger.error(
+          "[ Could not add encrypted random quotes. Contact ADMIN ]",
+          e
+        );
       }
     } else {
       logger.warn("No quotes could be fetched from twitter");
@@ -93,35 +100,29 @@ exports.fetchAndAdd = async () => {
   }
 };
 
+async function getMultipleQuotes() {
+  let today = new Date();
+  let biYear = getBiYear(today);
+  const quotesB1 = await readData(biYear);
+  today.setMonth(today.getMonth() - 6);
+  const quotesB2 = await readData(getBiYear(today));
+  let quotes = [...quotesB1.Items, ...quotesB2.Items].splice(0, 200);
+  return quotes;
+}
+
 const insertEncryptedRandomQuotes = async (latestQuote) => {
   try {
-    let today = new Date();
-    let biYear = getBiYear(today);
-    const quotesB1 = await readData(biYear);
-
-    today.setMonth(today.getMonth() - 6);
-    const quotesB2 = await readData(getBiYear(today));
-
-    console.log("B1 Quotes are ", quotesB1.Items);
-
-    console.log("B2 Quotes are ", quotesB2.Items);
-
-    let quotes = [...quotesB1.Items, ...quotesB2.Items].splice(0, 200);
-
-    console.log("Merged Quotes are", quotes);
-
+    const quotes = await getMultipleQuotes();
     let privateKey = process.env[envConfig.envVars.SG_PRIVATE_KEY_VAR];
     var encryptedQuotes = CryptoJS.AES.encrypt(
       JSON.stringify(quotes),
       privateKey
     ).toString();
-    encryptedQuotes = "Sudarshan";
-    logger.info("Encrypted random quotes are: ", encryptedQuotes);
-    let randomQuotes = await insertDataWithRandomQuotes(
-      latestQuote,
-      encryptedQuotes
-    );
+    await insertDataWithRandomQuotes(latestQuote, encryptedQuotes);
   } catch (e) {
-    logger.error("Something went wrong while inserting random quotes", e);
+    logger.error(
+      "Something went wrong while inserting encrypted random quotes",
+      e
+    );
   }
 };
