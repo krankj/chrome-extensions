@@ -28,7 +28,6 @@ const checkTwitterAuthKey = () => {
 };
 
 const checkEnvVars = () => {
-  checkEnv();
   checkPrivateKeyEnv();
   checkTwitterAuthKey();
 };
