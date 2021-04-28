@@ -3,8 +3,7 @@ const port = process.env.PORT || 9000;
 require("dotenv").config();
 const cors = require("cors");
 const app = express();
-const log4j = require("log4js");
-const logger = log4j.getLogger();
+const logger = require("log4js").getLogger();
 logger.level = "debug";
 const { QuotesRoute } = require("./routes");
 
