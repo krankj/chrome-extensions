@@ -7,10 +7,19 @@ app.use(express.json());
 app.disable("x-powered-by");
 
 app.get("/quotes", async (req, res, next) => {
-  const data = await readData(11111);
-  return res.status(200).send({
-    data: data.Items[0],
-  });
+  console.log("< Received read request >");
+  try {
+    const data = await readData(11111);
+    console.log("< Sending data to client... >");
+    return res.status(200).send({
+      data: data.Items[0],
+    });
+  } catch (e) {
+    console.error("Something went wrong while fetching data. Error: ", e);
+    return res
+      .status(500)
+      .send({ error: "Something went wrong while fetching data from db" });
+  }
 });
 
 app.use((req, res, next) => {
