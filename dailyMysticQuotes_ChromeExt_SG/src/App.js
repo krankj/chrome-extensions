@@ -130,26 +130,18 @@ function App() {
       async function fetchQuotes() {
         try {
           console.log("< Fetching latest quote and random quotes from db >");
-          console.time("dynamo");
-          const response = await readData(11111);
-          console.timeEnd("dynamo");
-          const data = response.Items[0];
-          const today = {
-            imageLink: data.imageLink,
-            twitterLink: data.twitterLink,
-            quote: data.quote,
-            publishedDate: data.publishedDate,
-          };
-          const random = data.randomQuotesList;
+          const response = await authAxios.get("/quotes");
+          const quoteData = response.data.data;
+          const { randomQuotesList, ...today } = quoteData;
           console.log(
             "< Updated local cache with latest quote and random quotes >"
           );
           setQuotesData({
             today,
-            list: random,
+            list: randomQuotesList,
           });
           dispatchQuotes({ type: "SUCCESS", payload: today });
-          notifySuccess("* New quote added *");
+          notifySuccess("New quote added");
         } catch (e) {
           notifyError(
             `[${ErrorCodes.FETCH_ERROR}] Server Error. If issue persists please contact us.`
