@@ -55,7 +55,6 @@ function App() {
       return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     } catch {
       console.log("< Check if a valid key is used >");
-      console.log("< Triggering fetch from server >");
       triggerFetchFromServer();
       notifyError(
         `[${ErrorCodes.INVALID_KEY}] Try again in sometime. If issue persists please contact us.`
@@ -104,6 +103,7 @@ function App() {
   );
 
   function triggerFetchFromServer() {
+    console.log("< Triggering fetch from server >");
     dispatchQuotes({ type: "INIT_FETCH" });
   }
 
@@ -112,16 +112,15 @@ function App() {
     const today = new Date();
     if (quotesData.today.publishedDate) {
       const nextTriggerDate = new Date(quotesData.today.publishedDate);
-      nextTriggerDate.setMinutes(nextTriggerDate.getMinutes() + 1455); //24hr = 1440 + 15min(buffer)
-      //Tweets are posted exactly at 2:45 GMT everyday, so we triggger an api call only after 2:45GMT the next day
+      nextTriggerDate.setMinutes(
+        nextTriggerDate.getMinutes() + config.ADD_MINS_TO_TRIGGER
+      );
       if (today.valueOf() <= nextTriggerDate.valueOf()) {
-        console.log("Next trigger date is", nextTriggerDate);
         triggerDispatch();
         return;
       }
     } else console.log("< Local cache is empty / has invalid data >");
 
-    console.log("triggering fetch from server");
     triggerFetchFromServer();
   }, []);
 
@@ -207,7 +206,7 @@ function App() {
             ? "Loading..."
             : quote.quote}
           {quote.isError &&
-            "There is nothing wrong or right. It's just something pleasant or unplesant that has occurred. Hold tight while I make it pleasant"}
+            "Something unpleasant occurred. Hold tight while I make it pleasant"}
         </QuoteCard>
 
         <Controls
