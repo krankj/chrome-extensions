@@ -15,6 +15,7 @@
     "default_title": "Remind yourselves to the deep wisdom provided by Sadhguru on every New Tab. New quotes every day at 2:45 GMT",
     "default_popup": "index.html"
   },
+  "permissions": ["storage"],
 "display": "fullscreen",
 "icons": {"128" : "sg-icon-128x128.png"},
   "commands": {

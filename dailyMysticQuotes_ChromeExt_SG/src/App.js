@@ -23,7 +23,7 @@ import {
   quotesDataSeedData,
   quotesMetaDataSeedData,
 } from "./utils/seedData";
-import { readData } from "./test";
+import { getVersion } from "./utils/chromeUtils";
 
 // const getClientIp = async () =>
 //   await publicIp.v4({
@@ -109,6 +109,12 @@ function App() {
 
   useEffect(() => {
     // getClientIp().then((result) => console.log(`< Ip is ${result} >`));
+    (async () => {
+      let version = await getVersion();
+      setQuotesMetaData((prev) => {
+        return { ...prev, version };
+      });
+    })();
     const today = new Date();
     if (quotesData.today.publishedDate) {
       const nextTriggerDate = new Date(quotesData.today.publishedDate);
@@ -186,9 +192,9 @@ function App() {
     return `${date.format(publishedDate, datePattern)}`;
   };
 
-  const handleDrawer = () => {
+  const handleDrawer = useCallback(() => {
     setIsDrawerOpen((prev) => !prev);
-  };
+  }, [setIsDrawerOpen]);
 
   return (
     <div className="container">
@@ -215,7 +221,11 @@ function App() {
           onRandomClick={handleRandomClick}
           metaData={quotesMetaData}
         />
-        <SideDrawer isOpen={isDrawerOpen} handleDrawer={handleDrawer} />
+        <SideDrawer
+          version={quotesMetaData.version}
+          isOpen={isDrawerOpen}
+          handleDrawer={handleDrawer}
+        />
         <Toast />
       </div>
     </div>

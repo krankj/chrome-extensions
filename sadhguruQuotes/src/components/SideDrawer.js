@@ -6,16 +6,8 @@ import { ReactComponent as ClockIcon } from "../assets/icons/wall-clock.svg";
 import { ReactComponent as ContentIcon } from "../assets/icons/content.svg";
 import { ReactComponent as MadeIcon } from "../assets/icons/tools.svg";
 import { ReactComponent as InfoIcon } from "../assets/icons/information.svg";
-import getVersion from "../utils/version";
 
-const SideDrawer = ({ isOpen, handleDrawer }) => {
-  const [version, setVersion] = useState("1.6");
-  useEffect(() => {
-    (async function () {
-      let v = await getVersion();
-      setVersion(v);
-    })();
-  }, []);
+const SideDrawer = React.memo(({ isOpen, handleDrawer, version }) => {
   return (
     <div>
       <span
@@ -63,6 +55,6 @@ const SideDrawer = ({ isOpen, handleDrawer }) => {
       </div>
     </div>
   );
-};
+});
 
 export default SideDrawer;

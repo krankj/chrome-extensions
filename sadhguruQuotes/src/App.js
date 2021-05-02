@@ -10,7 +10,7 @@ import publicIp from "public-ip";
 import SideDrawer from "./components/SideDrawer";
 import classNames from "classnames";
 import ToggleSwitch from "./components/ToggleSwitch";
-import { useSemiPersistentState } from "./hooks";
+import { useChromeStorage, useSemiPersistentState } from "./hooks";
 import keys from "./utils/keys";
 import CryptoJS from "crypto-js";
 import config from "./config";
@@ -23,11 +23,14 @@ import {
   quotesDataSeedData,
   quotesMetaDataSeedData,
 } from "./utils/seedData";
+import { getLocalVersion, getVersion } from "./utils/chromeUtils";
 
 // const getClientIp = async () =>
 //   await publicIp.v4({
 //     fallbackUrls: ["https://ifconfig.co/ip"],
 //   });
+
+// window.matchMedia("(prefers-color-scheme: dark)");
 
 date.plugin(ordinal);
 const datePattern = date.compile("MMMM DDD, YYYY");
@@ -43,6 +46,11 @@ function App() {
     keys.SG_QUOTES_METADATA_KEY,
     quotesMetaDataSeedData
   );
+
+  // console.log(
+  //   "Quotes meta data is",
+  //   quotesMetaData.then((r) => console.log("Result is", r))
+  // );
 
   const decryptQuotesList = useCallback((quotesList) => {
     const encryptedQuotes = quotesList;
@@ -145,11 +153,18 @@ function App() {
 
   useEffect(() => {
     // getClientIp().then((result) => console.log(`< Ip is ${result} >`));
+    (async () => {
+      let version = await getVersion();
+      setQuotesMetaData((prev) => {
+        return { ...prev, version };
+      });
+    })();
     const today = new Date();
     if (quotesData.today.publishedDate) {
       const nextTriggerDate = new Date(quotesData.today.publishedDate);
-      nextTriggerDate.setHours(nextTriggerDate.getHours() + 24);
-      //Tweets are posted exactly at 2:45 GMT everyday, so we triggger an api call only after 2:45GMT the next day
+      nextTriggerDate.setMinutes(
+        nextTriggerDate.getMinutes() + config.ADD_MINS_TO_TRIGGER
+      );
       if (today.valueOf() <= nextTriggerDate.valueOf()) {
         triggerDispatch();
         return;
@@ -176,6 +191,7 @@ function App() {
             today: today.data.data,
             list: list.data.data,
           });
+
           dispatchQuotes({ type: "SUCCESS", payload: today.data.data });
           notifySuccess("* New quote added *");
         } catch (e) {
@@ -223,9 +239,9 @@ function App() {
     return `${date.format(publishedDate, datePattern)}`;
   };
 
-  const handleDrawer = () => {
+  const handleDrawer = useCallback(() => {
     setIsDrawerOpen((prev) => !prev);
-  };
+  }, [setIsDrawerOpen]);
 
   return (
     <div className="container">
@@ -243,7 +259,7 @@ function App() {
             ? "Loading..."
             : quote.quote}
           {quote.isError &&
-            "There is nothing wrong or right. It's just something pleasant or unplesant that has occurred. Hold tight while I make it pleasant"}
+            "Something unpleasant occurred. Hold tight while I make it pleasant"}
         </QuoteCard>
 
         <Controls
@@ -252,7 +268,11 @@ function App() {
           onRandomClick={handleRandomClick}
           metaData={quotesMetaData}
         />
-        <SideDrawer isOpen={isDrawerOpen} handleDrawer={handleDrawer} />
+        <SideDrawer
+          version={quotesMetaData.version}
+          isOpen={isDrawerOpen}
+          handleDrawer={handleDrawer}
+        />
         <Toast />
       </div>
     </div>

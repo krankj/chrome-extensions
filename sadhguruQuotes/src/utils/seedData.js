@@ -16,6 +16,6 @@ module.exports = {
       random: 0,
     },
     showRandomQuote: false,
-    version: 1.4,
+    version: "",
   },
 };
