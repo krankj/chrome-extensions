@@ -2,7 +2,7 @@
 
 async function getLocalVersion() {
   return new Promise((resolve) => {
-    resolve(1.6);
+    resolve({ version: "1.6_L" });
   });
 }
 

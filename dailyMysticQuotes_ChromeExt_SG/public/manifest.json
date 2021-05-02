@@ -1,7 +1,7 @@
 {
   "name": "Daily Mystic Quotes - Sadhguru",
   "description" : "Be greeted on every new tab with Sadhguru's quotes",
-  "version": "1.6",
+  "version": "1.0",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"

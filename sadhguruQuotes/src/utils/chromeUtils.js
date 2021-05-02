@@ -1,6 +1,6 @@
 /*global chrome*/
 
-export async function getLocalVersion() {
+async function getLocalVersion() {
   return new Promise((resolve) => {
     resolve(1.6);
   });

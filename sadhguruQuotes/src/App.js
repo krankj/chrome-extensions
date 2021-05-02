@@ -23,7 +23,7 @@ import {
   quotesDataSeedData,
   quotesMetaDataSeedData,
 } from "./utils/seedData";
-import { getLocalVersion, getVersion } from "./utils/chromeUtils";
+import { getVersion } from "./utils/chromeUtils";
 
 // const getClientIp = async () =>
 //   await publicIp.v4({
@@ -154,7 +154,7 @@ function App() {
   useEffect(() => {
     // getClientIp().then((result) => console.log(`< Ip is ${result} >`));
     (async () => {
-      let version = await getVersion();
+      let { version } = await getVersion();
       setQuotesMetaData((prev) => {
         return { ...prev, version };
       });

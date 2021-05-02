@@ -110,7 +110,7 @@ function App() {
   useEffect(() => {
     // getClientIp().then((result) => console.log(`< Ip is ${result} >`));
     (async () => {
-      let version = await getVersion();
+      let { version } = await getVersion();
       setQuotesMetaData((prev) => {
         return { ...prev, version };
       });
