@@ -11,12 +11,20 @@ const {
   insertDataWithRandomQuotes,
 } = require("./dynamo/dataOperations");
 
-async function getQuotesFromTwitter(pastDays) {
-  if (pastDays < 1 || pastDays > 7) {
-    throw new Error("Invalid 'pastDays' supplied. Must be between 1 and 7");
-  }
-  const startDateTime = new Date();
-  startDateTime.setDate(startDateTime.getDate() - pastDays);
+async function getQuotesFromTwitter() {
+  const today = new Date();
+  const startDateTime = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    0,
+    0,
+    0
+  );
+  startDateTime.setMinutes(
+    startDateTime.getMinutes() - startDateTime.getTimezoneOffset()
+  );
+  console.log("[ Start date search for twitter is ] => ", startDateTime);
 
   try {
     const response = await twitterSearchApi.get("", {
@@ -33,9 +41,11 @@ async function getQuotesFromTwitter(pastDays) {
       const found = includes.find(
         (ele) => element.attachments.media_keys[0] === ele.media_key
       );
-      const split = element.text.split(" #SadhguruQuotes ");
-      const text = split[0];
-      const link = split[1];
+
+      const quoteText = element.text;
+      const split = quoteText.replace(/\n/g, "").split("#SadhguruQuotes");
+      const text = split[0].trim();
+      const link = split[1].trim();
 
       const quoteObj = {
         quote: text,
@@ -65,9 +75,8 @@ const checkIfValidFieldsExist = (quote) => {
 };
 
 exports.fetchAndAdd = async () => {
-  const last = 1;
   try {
-    const quotes = await getQuotesFromTwitter(last);
+    const quotes = await getQuotesFromTwitter();
     if (quotes) {
       let latestQuote = quotes[0];
       checkIfValidFieldsExist(latestQuote);
@@ -92,7 +101,7 @@ exports.fetchAndAdd = async () => {
         );
       }
     } else {
-      logger.warn("No quotes could be fetched from twitter");
+      logger.error("[ *** NO quotes could be fetched from *** ]");
     }
   } catch (e) {
     logger.error("Something went wrong while fetching quotes from Twitter", e);

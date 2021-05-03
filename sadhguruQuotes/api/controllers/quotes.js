@@ -66,9 +66,19 @@ exports.manualAdd = async (req, res) => {
 };
 
 async function getQuotesFromTwitter(pastDays) {
-  const startDateTime = new Date();
-  startDateTime.setDate(startDateTime.getDate() - pastDays);
-
+  const today = new Date();
+  const startDateTime = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    0,
+    0,
+    0
+  );
+  startDateTime.setMinutes(
+    startDateTime.getMinutes() - startDateTime.getTimezoneOffset()
+  );
+  console.log("< Start date search for twitter is >", startDateTime);
   try {
     const response = await twitterSearchApi.get("", {
       params: {
@@ -84,9 +94,10 @@ async function getQuotesFromTwitter(pastDays) {
       const found = includes.find(
         (ele) => element.attachments.media_keys[0] === ele.media_key
       );
-      const split = element.text.split(" #SadhguruQuotes ");
-      const text = split[0];
-      const link = split[1];
+      const quoteText = element.text;
+      const split = quoteText.replace(/\n/g, "").split("#SadhguruQuotes");
+      const text = split[0].trim();
+      const link = split[1].trim();
 
       const quoteObj = {
         quote: text,
@@ -97,11 +108,7 @@ async function getQuotesFromTwitter(pastDays) {
       return quoteObj;
     });
   } catch (error) {
-    if (error.response.status === 400) {
-      logger.error("Bad request was made to twitter api");
-    } else {
-      logger.error("Error occurred while contacting twitter api.", error);
-    }
+    logger.error("Error occurred while contacting twitter api.", error);
   }
 }
 
