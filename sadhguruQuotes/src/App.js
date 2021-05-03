@@ -258,8 +258,8 @@ function App() {
     if (quote.isError) return "Infinity";
     if (quote.isLoading || !quote.publishedDate) return "Please wait...";
     const publishedDate = new Date(quote.publishedDate);
-    const offset = publishedDate.getTimezoneOffset() / 60;
-    publishedDate.setHours(publishedDate.getHours() + offset);
+    const offset = publishedDate.getTimezoneOffset();
+    publishedDate.setMinutes(publishedDate.getMinutes() + offset);
     return `${date.format(publishedDate, datePattern)}`;
   };
 
