@@ -15,6 +15,7 @@ module.exports = {
       today: 0,
       random: 0,
     },
+    theme: "light",
     showRandomQuote: false,
     version: "",
   },

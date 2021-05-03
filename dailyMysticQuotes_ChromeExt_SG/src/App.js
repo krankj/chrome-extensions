@@ -29,6 +29,9 @@ import {
   quotesMetaDataSeedData,
 } from "./utils/seedData";
 import { getVersion } from "./utils/chromeUtils";
+import { GlobalStyles } from "./global";
+import { ThemeProvider } from "styled-components";
+import { lightTheme, darkTheme } from "./utils/theme";
 
 // const getClientIp = async () =>
 //   await publicIp.v4({
@@ -101,7 +104,11 @@ function App() {
   const handleToggleSwitch = useCallback(
     (value) => {
       setQuotesMetaData((prev) => {
-        return { ...prev, showRandomQuote: value };
+        return {
+          ...prev,
+          showRandomQuote: value,
+          theme: value ? "dark" : "light",
+        };
       });
     },
     [setQuotesMetaData]
@@ -219,37 +226,43 @@ function App() {
   }, [setIsDrawerOpen]);
 
   return (
-    <div className="container">
-      <ToggleSwitch
-        callback={handleToggleSwitch}
-        initState={quotesMetaData.showRandomQuote}
-      />
-      <div className={classNames("app", { shrink: isDrawerOpen })}>
-        <QuoteCard
-          key={quote.quote}
-          publishedDate={getPublishdedDate()}
-          quoteImage={quote.imageLink}
-        >
-          {(quote.isLoading || !quote.quote) && !quote.isError
-            ? "Loading..."
-            : quote.quote}
-          {quote.isError && !quote.quote && "Something unpleasant occurred."}
-        </QuoteCard>
+    <ThemeProvider
+      theme={quotesMetaData.theme === "light" ? lightTheme : darkTheme}
+    >
+      <div className="mainContainer">
+        <div className="overlay" />
+        <GlobalStyles />
+        <ToggleSwitch
+          callback={handleToggleSwitch}
+          initState={quotesMetaData.showRandomQuote}
+        />
+        <div className={classNames("app", { shrink: isDrawerOpen })}>
+          <QuoteCard
+            key={quote.quote}
+            publishedDate={getPublishdedDate()}
+            quoteImage={quote.imageLink}
+          >
+            {(quote.isLoading || !quote.quote) && !quote.isError
+              ? "Loading..."
+              : quote.quote}
+            {quote.isError && !quote.quote && "Something unpleasant occurred."}
+          </QuoteCard>
 
-        <Controls
-          randomQuoteDate={quote.publishedDate}
-          onTodaysQuoteClick={handleTodaysQuoteClick}
-          onRandomClick={handleRandomClick}
-          metaData={quotesMetaData}
-        />
-        <SideDrawer
-          version={quotesMetaData.version}
-          isOpen={isDrawerOpen}
-          handleDrawer={handleDrawer}
-        />
-        <Toast />
+          <Controls
+            randomQuoteDate={quote.publishedDate}
+            onTodaysQuoteClick={handleTodaysQuoteClick}
+            onRandomClick={handleRandomClick}
+            metaData={quotesMetaData}
+          />
+          <SideDrawer
+            version={quotesMetaData.version}
+            isOpen={isDrawerOpen}
+            handleDrawer={handleDrawer}
+          />
+          <Toast />
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
 

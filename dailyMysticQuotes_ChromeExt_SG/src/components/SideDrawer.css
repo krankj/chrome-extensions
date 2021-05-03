@@ -1,3 +1,5 @@
+@import "../global/variables.css";
+
 .sidenav {
   height: 100%;
   width: 0;
@@ -5,9 +7,9 @@
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: rgb(138, 70, 6);
+  background-color: var(--drawer-bg-color);
   overflow-x: hidden;
-  transition: 0.5s;
+  transition: 0.4s;
   opacity: 0.95;
 }
 
@@ -48,7 +50,7 @@
 .infoIcon {
   height: 22px;
   width: 22px;
-  fill: rgb(138, 70, 6);
+  fill: var(--button-color);
 }
 
 .sidenav button {
@@ -65,14 +67,13 @@ h1 {
   font-family: "Sadhguru Thin";
   width: 200px; /*Fixed width is given so that the content doesnt expand when the drawer is being opened*/
   text-align: center;
-  color: white;
+  color: var(--drawer-content-font-color);
   font-size: 1rem;
   margin: 4px;
 }
 
 h1 {
   font-weight: normal;
-  color: rgb(255, 188, 62);
   margin-bottom: 16px;
 }
 
@@ -95,7 +96,7 @@ h1 {
 
 .openButton {
   position: absolute;
-  top: 25px;
+  bottom: 25px;
   left: 25px;
   cursor: pointer;
 }

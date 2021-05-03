@@ -1,5 +1,5 @@
 .app,
-.container {
+.mainContainer {
   padding: 0 48px;
   min-height: 100vh;
   display: flex;
@@ -7,8 +7,17 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: rgb(138, 70, 6);
-  transition: 0.5s;
+}
+
+.mainContainer {
+  transition: 0.3s;
+}
+
+.overlay {
+  position: absolute;
+}
+.app {
+  transition: 0.4s;
 }
 
 @media screen and (max-width: 600px) {

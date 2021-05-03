@@ -1,22 +1,32 @@
+@import "../global/variables.css";
+
 .controlsContainer {
   display: flex;
   margin: 2rem 0 0 0;
   opacity: 0.7;
+  width: 200px;
+  justify-content: space-between;
   transition: 0.5s;
+}
+.randomButton,
+.todayButton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  font-size: 10px;
+  height: 50px;
 }
 
 .randomIcon,
 .todayIcon {
-  height: 20px;
-  width: 20px;
+  height: 22px;
+  width: 22px;
   margin: 0 1rem;
-  fill: rgb(138, 70, 6);
+  fill: var(--button-color);
 }
 
-@media (hover: hover) {
-  .randomButton:hover,
-  .todayButton:hover {
-    transform: scale(1.3);
-    transition: transform 0.2s;
-  }
+.randomButton:hover,
+.todayButton:hover {
+  cursor: pointer;
 }

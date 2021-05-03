@@ -1,13 +1,11 @@
 import React from "react";
-import sgSignature from "../assets/sg_signature.png";
-import sgUnderline from "../assets/quote-beneath.png";
+import { ReactComponent as SGSignature } from "../assets/icons/sadhguruSignature.svg";
 import SadhguruDefaultImage from "../assets/sadhguru.jpg";
 import "./QuoteCard.css";
 
 const QuoteCard = ({ publishedDate, quoteImage, children }) => {
   return (
     <div className="quoteCard">
-      <p className="quoteDate">{publishedDate}</p>
       <img
         src={quoteImage}
         className="sg-image"
@@ -16,20 +14,12 @@ const QuoteCard = ({ publishedDate, quoteImage, children }) => {
           e.target.src = SadhguruDefaultImage;
         }}
       />
+      <p className="quoteDate">{publishedDate}</p>
       <div className="quoteTextContainer">
         <p className="quoteText">{children}</p>
       </div>
       <div className="signatureBox">
-        <img
-          className="sg-signature"
-          src={sgSignature}
-          alt="Sadhguru Signature"
-        />
-        <img
-          className="sg-underline"
-          src={sgUnderline}
-          alt="Sadhguru Underline"
-        />
+        <SGSignature />
       </div>
     </div>
   );
