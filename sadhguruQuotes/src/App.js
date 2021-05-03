@@ -15,7 +15,12 @@ import keys from "./utils/keys";
 import CryptoJS from "crypto-js";
 import config from "./config";
 import ErrorCodes from "./utils/errorCodes";
-import { Toast, notifySuccess, notifyError } from "./components/Toast";
+import {
+  Toast,
+  notifySuccess,
+  notifyError,
+  notifyWarn,
+} from "./components/Toast";
 import "react-toastify/dist/ReactToastify.css";
 import { quoteReducer } from "./reducers";
 import {
@@ -129,6 +134,7 @@ function App() {
             notifyError(
               `[${ErrorCodes.SERVER_ERROR_AUTO_ADD}] Server Error. If issue persists please contact us.`
             );
+            dispatchQuotes({ type: "FAILED" });
             console.error("Error occurred", e);
           }
         })
@@ -144,15 +150,18 @@ function App() {
       })
       .catch((e) => {
         if (e.response && e.response.status === 404) triggerAutoAddOnServer();
-        else
+        else {
           notifyError(
             `[${ErrorCodes.SERVER_ERROR_CHECK_IF_EXISTS}] Server Error. If issue persists please contact us.`
           );
+          dispatchQuotes({ type: "FAILED" });
+        }
       });
   }
 
   useEffect(() => {
     // getClientIp().then((result) => console.log(`< Ip is ${result} >`));
+    const isOnline = navigator.onLine;
     (async () => {
       let { version } = await getVersion();
       setQuotesMetaData((prev) => {
@@ -165,12 +174,27 @@ function App() {
       nextTriggerDate.setMinutes(
         nextTriggerDate.getMinutes() + config.ADD_MINS_TO_TRIGGER
       );
-      if (today.valueOf() <= nextTriggerDate.valueOf()) {
+      //quotes are already present in local cache, but client is unable to get new quotes
+      if (!isOnline) {
+        notifyWarn(
+          `[${ErrorCodes.CLIENT_OFFLINE}] Unable to fetch a new quote since your device is not connected to the Internet`
+        );
+      }
+      if (today.valueOf() <= nextTriggerDate.valueOf() || !isOnline) {
         triggerDispatch();
         return;
       }
-    } else console.log("< Local cache is empty / has invalid data >");
-
+    } else {
+      //no quotes are present in local cache, and hence cannot display anything.
+      if (!isOnline) {
+        notifyWarn(
+          `[${ErrorCodes.CLIENT_OFFLINE}] Unable to fetch quotes since your device is not connected to the Internet`
+        );
+        dispatchQuotes({ type: "FAILED" });
+        return;
+      }
+      console.log("< Local cache is empty / has invalid data >");
+    }
     triggerFetchFromServer();
   }, []);
 
@@ -258,8 +282,7 @@ function App() {
           {(quote.isLoading || !quote.quote) && !quote.isError
             ? "Loading..."
             : quote.quote}
-          {quote.isError &&
-            "Something unpleasant occurred. Hold tight while I make it pleasant"}
+          {quote.isError && !quote.quote && "Something unpleasant occurred."}
         </QuoteCard>
 
         <Controls

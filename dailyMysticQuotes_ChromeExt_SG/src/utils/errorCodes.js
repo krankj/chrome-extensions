@@ -1,7 +1,8 @@
 const ErrorCodes = {
   INVALID_KEY: "CL01",
-  FETCH_ERROR: "SR02",
-  UNKONWN_ERROR: "UN03",
+  CLIENT_OFFLINE: "CL02",
+  SERVER_FETCH_ERROR: "SR03",
+  UNKONWN_ERROR: "UN04",
 };
 
 export default ErrorCodes;
