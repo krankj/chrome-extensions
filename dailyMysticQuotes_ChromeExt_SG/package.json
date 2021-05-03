@@ -1,6 +1,6 @@
 {
-  "name": "daily-sadhguru-quotes",
-  "version": "1.1.5",
+  "name": "daily-mystic-quotes-sadhguru",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.9",

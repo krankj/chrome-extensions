@@ -127,6 +127,7 @@ function App() {
       nextTriggerDate.setMinutes(
         nextTriggerDate.getMinutes() + config.ADD_MINS_TO_TRIGGER
       );
+      //old quotes exist in local cache, but device is now offline. It caanot retrieve the latest quote, but it can as well show old quotes.
       if (!isOnline) {
         notifyWarn(
           `[${ErrorCodes.CLIENT_OFFLINE}] Unable to fetch a new quote since your device is not connected to the Internet`
@@ -137,6 +138,7 @@ function App() {
         return;
       }
     } else {
+      //no data exists in local cache. Here the app will not be able to show any stored data since there isn't any. Hence we dispatch an error.
       if (!isOnline) {
         notifyWarn(
           `[${ErrorCodes.CLIENT_OFFLINE}] Unable to fetch quotes since your device is not connected to the Internet`
