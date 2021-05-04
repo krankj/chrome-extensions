@@ -101,7 +101,7 @@ exports.fetchAndAdd = async () => {
         );
       }
     } else {
-      logger.error("[ *** NO quotes could be fetched from *** ]");
+      logger.error("[ *** NO quotes could be fetched from twitter *** ]");
     }
   } catch (e) {
     logger.error("Something went wrong while fetching quotes from Twitter", e);

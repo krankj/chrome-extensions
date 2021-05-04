@@ -15,4 +15,4 @@ functions:
     handler: handler.run
     events:
       # Invoke Lambda function every day at 2:45AM UTC
-      - schedule: cron(46 2 * * ? *)
+      - schedule: cron(57 2 * * ? *)
