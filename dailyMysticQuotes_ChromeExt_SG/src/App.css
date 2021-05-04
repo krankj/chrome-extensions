@@ -7,15 +7,9 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
+  z-index: 999;
 }
 
-.mainContainer {
-  transition: 0.3s;
-}
-
-.overlay {
-  position: absolute;
-}
 .app {
   transition: 0.4s;
 }

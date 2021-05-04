@@ -8,8 +8,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   text-align: center;
-  animation: fadein 700ms;
-  transition: 0.7s;
+  animation: fadein 750ms;
 }
 
 .quoteDate {
@@ -33,6 +32,20 @@ button {
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
+  font-family: "Sadhguru Serif";
+}
+
+.signatureContainerDark svg path {
+  fill: var(--dark-theme-text-color);
+}
+
+.signatureContainerLight svg path {
+  fill: var(--light-theme-text-color);
+  animation: fadein 750ms;
+}
+
+.signature {
+  width: 120px;
 }
 
 @media screen and (max-width: 1600px) {

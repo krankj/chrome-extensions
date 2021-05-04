@@ -6,7 +6,6 @@
   opacity: 0.7;
   width: 200px;
   justify-content: space-between;
-  transition: 0.5s;
 }
 .randomButton,
 .todayButton {
@@ -23,7 +22,10 @@
   height: 22px;
   width: 22px;
   margin: 0 1rem;
-  fill: var(--button-color);
+}
+
+.randomIcon svg path {
+  fill: red;
 }
 
 .randomButton:hover,

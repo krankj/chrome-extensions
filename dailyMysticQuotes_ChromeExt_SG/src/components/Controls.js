@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ReactComponent as Random } from "../assets/icons/randomQuoteIcon.svg";
-import { ReactComponent as Today } from "../assets/icons/todayQuoteIcon.svg";
+import { ReactComponent as Random } from "../assets/icons/randomIcon.svg";
+import { ReactComponent as Today } from "../assets/icons/todayIcon.svg";
 import "./Controls.css";
 
 const Controls = ({ randomQuoteDate, onRandomClick, onTodaysQuoteClick }) => {
@@ -41,7 +41,7 @@ const Controls = ({ randomQuoteDate, onRandomClick, onTodaysQuoteClick }) => {
         }}
       >
         <Today className="todayIcon" />
-        <span>Todays quote</span>
+        <span>Today's quote</span>
       </div>
     </div>
   );

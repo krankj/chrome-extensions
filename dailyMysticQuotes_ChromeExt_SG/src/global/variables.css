@@ -1,9 +1,6 @@
 :root {
-  --hover-color: #b45100;
-  --box-border-color: #b45100;
-  --toggleButton-bg-color: #b45100;
-  --gallery-page-box-border-color: none;
-  --background-dark: #1b1b1b;
+  --light-theme-text-color: #464743;
+  --dark-theme-text-color: #f0ebe1;
   --button-color: #7e756d;
   --date-color: #73756d;
   --drawer-bg-color: #464038;

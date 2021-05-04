@@ -32,6 +32,8 @@ import { getVersion } from "./utils/chromeUtils";
 import { GlobalStyles } from "./global";
 import { ThemeProvider } from "styled-components";
 import { lightTheme, darkTheme } from "./utils/theme";
+import Settings from "./components/Settings";
+import SkewedDiagonal from "./components/SkewedDiagonal";
 
 // const getClientIp = async () =>
 //   await publicIp.v4({
@@ -229,8 +231,8 @@ function App() {
     <ThemeProvider
       theme={quotesMetaData.theme === "light" ? lightTheme : darkTheme}
     >
+      <SkewedDiagonal />
       <div className="mainContainer">
-        <div className="overlay" />
         <GlobalStyles />
         <ToggleSwitch
           callback={handleToggleSwitch}
@@ -247,7 +249,12 @@ function App() {
               : quote.quote}
             {quote.isError && !quote.quote && "Something unpleasant occurred."}
           </QuoteCard>
-
+          <Settings
+            onToggleTheme={() => console.log("Clicked theme button")}
+            onToggleRandomQuoteOnNewTab={() =>
+              console.log("Clicked random quote on new tab")
+            }
+          />
           <Controls
             randomQuoteDate={quote.publishedDate}
             onTodaysQuoteClick={handleTodaysQuoteClick}
