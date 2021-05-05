@@ -10,7 +10,7 @@ const SkewedDiagonal = styled.div`
   height: 100%;
   background: ${({ theme }) => theme.bgSecondaryColor};
   z-index: 0;
-  transform: skewY(-7deg);
+  transform: skewY(-5deg);
   transform-origin: top left;
 `;
 
