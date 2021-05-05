@@ -1,8 +1,10 @@
 const serverless = require("serverless-http");
+const cors = require("cors");
 const express = require("express");
 const { readData } = require("./dynamo");
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.disable("x-powered-by");
 

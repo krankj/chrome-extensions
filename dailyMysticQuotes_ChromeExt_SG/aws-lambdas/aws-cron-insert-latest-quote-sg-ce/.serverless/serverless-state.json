@@ -221,7 +221,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/aws-cron-insert-latest-quote-sg-ce/dev/1620027751313-2021-05-03T07:42:31.313Z/aws-cron-insert-latest-quote-sg-ce.zip"
+                "S3Key": "serverless/aws-cron-insert-latest-quote-sg-ce/dev/1620203968451-2021-05-05T08:39:28.451Z/aws-cron-insert-latest-quote-sg-ce.zip"
               },
               "Handler": "s_cronHandler.handler",
               "Runtime": "nodejs12.x",
@@ -239,20 +239,20 @@
               "CronHandlerLogGroup"
             ]
           },
-          "CronHandlerLambdaVersionIbeFUO0ZKH0rQTrusUfgeXcDZ9EqwvAoUncBXsNw": {
+          "CronHandlerLambdaVersionprf9fELqXneoAa65occWK0J1n0dUSusTBmuwFdrQ": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CronHandlerLambdaFunction"
               },
-              "CodeSha256": "DfIDTpiDSFwZVKyb8ojMtoVTvvf7M4mNw/+WPfwBSU8="
+              "CodeSha256": "w2UzdiVZeTTnEPHqDmfBsjFfID97nOonDUzKnQXpeVk="
             }
           },
           "CronHandlerEventsRuleSchedule1": {
             "Type": "AWS::Events::Rule",
             "Properties": {
-              "ScheduleExpression": "cron(46 2 * * ? *)",
+              "ScheduleExpression": "cron(58 2 * * ? *)",
               "State": "ENABLED",
               "Targets": [
                 {
@@ -320,7 +320,7 @@
           "CronHandlerLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CronHandlerLambdaVersionIbeFUO0ZKH0rQTrusUfgeXcDZ9EqwvAoUncBXsNw"
+              "Ref": "CronHandlerLambdaVersionprf9fELqXneoAa65occWK0J1n0dUSusTBmuwFdrQ"
             },
             "Export": {
               "Name": "sls-aws-cron-insert-latest-quote-sg-ce-dev-CronHandlerLambdaFunctionQualifiedArn"
@@ -418,7 +418,7 @@
         "handler": "s_cronHandler.handler",
         "events": [
           {
-            "schedule": "cron(46 2 * * ? *)"
+            "schedule": "cron(58 2 * * ? *)"
           }
         ],
         "name": "aws-cron-insert-latest-quote-sg-ce-dev-cronHandler",
@@ -427,7 +427,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "CronHandlerLambdaVersionIbeFUO0ZKH0rQTrusUfgeXcDZ9EqwvAoUncBXsNw"
+        "versionLogicalId": "CronHandlerLambdaVersionprf9fELqXneoAa65occWK0J1n0dUSusTBmuwFdrQ"
       }
     },
     "configValidationMode": "warn",
@@ -456,7 +456,7 @@
     "artifact": "D:\\Git Projects\\chrome-extensions\\dailyMysticQuotes_ChromeExt_SG\\aws-lambdas\\aws-cron-insert-latest-quote-sg-ce\\.serverless\\aws-cron-insert-latest-quote-sg-ce.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/aws-cron-insert-latest-quote-sg-ce/dev/1620027751313-2021-05-03T07:42:31.313Z",
+    "artifactDirectoryName": "serverless/aws-cron-insert-latest-quote-sg-ce/dev/1620203968451-2021-05-05T08:39:28.451Z",
     "artifact": "aws-cron-insert-latest-quote-sg-ce.zip"
   }
 }

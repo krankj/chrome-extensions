@@ -3,8 +3,6 @@ export const lightTheme = {
   bgPrimaryColor: "#f5f0e5",
   bgSecondaryColor: "#ffffff",
   // textColor: "#28231E",
-  //textColor: "#4f4337",
-  textColor: "#555751",
   textColor: "#464743",
 };
 

@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./SideDrawer.css";
 import classNames from "classnames";
 import SocialIcons from "./SocialIcons";
 import { ReactComponent as ClockIcon } from "../assets/icons/timer.svg";
-import { ReactComponent as ContentIcon } from "../assets/icons/content.svg";
-import { ReactComponent as MadeIcon } from "../assets/icons/tools.svg";
 import { ReactComponent as InfoIcon } from "../assets/icons/information.svg";
 
 const SideDrawer = React.memo(({ version, isOpen, handleDrawer }) => {
