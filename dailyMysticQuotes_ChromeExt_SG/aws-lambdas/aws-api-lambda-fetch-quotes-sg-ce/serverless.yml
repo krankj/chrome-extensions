@@ -1,4 +1,4 @@
-org: ishadevops
+org: kjsudi
 app: aws-api-lambda-fetch-quotes-sg-ce
 service: aws-api-lambda-fetch-quotes-sg-ce
 
@@ -7,7 +7,7 @@ frameworkVersion: "2"
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: prod
+  stage: dev
   region: ap-south-1
   lambdaHashingVersion: "20201221"
 
@@ -18,3 +18,6 @@ functions:
       - http:
           path: /quotes
           method: GET
+      - http:
+          path: /cacheQuoteLocally
+          method: POST
