@@ -1,6 +1,6 @@
 {
   "name": "Daily Mystic Quotes - Sadhguru",
-  "description" : "Be greeted on every new tab with Sadhguru's quotes",
+  "description" : "A quote from Sadhguru on every new tab",
   "version": "1.0",
   "manifest_version": 3,
   "background": {
@@ -12,10 +12,9 @@
   "author": "Isha Foundation",
   "action": {
     "default_icon": {"16" :"sg-icon-16x16.png", "48": "sg-icon-48x48.png", "128" : "sg-icon-128x128.png"},
-    "default_title": "Be greeted on every new tab with Sadhguru's quotes",
+    "default_title": "A quote from Sadhguru on every new tab",
     "default_popup": "index.html"
   },
-"permissions": ["storage"],
 "display": "fullscreen",
 "icons": {"128" : "sg-icon-128x128.png"},
   "commands": {

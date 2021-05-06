@@ -17,7 +17,7 @@ exports.readData = (key) => {
   return new Promise((res, rej) => {
     docClient.query(params, function (err, data) {
       if (err) {
-        logger.error("Unable to read item. Error JSON:", JSON.stringify(err));
+        console.error("Unable to read item. Error JSON:", JSON.stringify(err));
         rej(err);
       } else {
         res(data);

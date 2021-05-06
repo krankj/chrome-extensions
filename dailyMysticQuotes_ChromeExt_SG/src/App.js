@@ -249,12 +249,12 @@ function App() {
               : quote.quote}
             {quote.isError && !quote.quote && "Something unpleasant occurred."}
           </QuoteCard>
-          <Settings
+          {/* <Settings
             onToggleTheme={() => console.log("Clicked theme button")}
             onToggleRandomQuoteOnNewTab={() =>
               console.log("Clicked random quote on new tab")
             }
-          />
+          /> */}
           <Controls
             randomQuoteDate={quote.publishedDate}
             onTodaysQuoteClick={handleTodaysQuoteClick}

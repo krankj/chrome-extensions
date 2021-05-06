@@ -24,8 +24,14 @@
   margin: 0 1rem;
 }
 
-.randomIcon svg path {
-  fill: red;
+.randomButton:hover,
+.todayButton:hover {
+  color: var(--hover-button-color);
+}
+
+.randomButton:hover svg path,
+.todayButton:hover svg path {
+  fill: var(--hover-button-color);
 }
 
 .randomButton:hover,
