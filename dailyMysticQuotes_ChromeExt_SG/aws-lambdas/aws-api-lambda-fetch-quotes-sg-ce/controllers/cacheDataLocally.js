@@ -31,9 +31,9 @@ const cacheDataLocally = asyncHandler(async (req, res, next) => {
   let release = await lockfile.lock(config.LOCAL_CACHE_FILE_NAME);
   /*
      We had to wrap the 'fetchFromDbAndCacheLocally' call in a try/catch block 
-     since not doing so would keep the HTTP request hanging. We now throw an error received
-     from the function and respond to the caller with the error stack. Finally, the file lock is released
-     regardless of the operation status.
+     since not doing so would keep the HTTP request hanging if an error occurs in the function. 
+     We now throw an error received from the function and respond to the caller with the error stack. 
+     Finally, the file lock is released regardless of the operation status.
     */
   try {
     await fetchFromDbAndCacheLocally();
