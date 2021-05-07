@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const SkewedDiagonal = styled.div`
   position: absolute;
-  top: -400px;
+  top: -60%;
   bottom: 0;
   right: 0;
   left: 0;

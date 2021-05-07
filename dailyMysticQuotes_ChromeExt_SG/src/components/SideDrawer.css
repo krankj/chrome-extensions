@@ -64,21 +64,43 @@
 
 .contentContainer p,
 h1 {
-  font-family: "Sadhguru Thin";
   width: 200px; /*Fixed width is given so that the content doesnt expand when the drawer is being opened*/
   text-align: center;
   color: var(--drawer-content-font-color);
-  font-size: 1rem;
   margin: 4px;
+}
+
+.twelvePx {
+  font-size: 12px;
+}
+
+.fourteenPx {
+  font-size: 14px;
+}
+
+.sixteenPx {
+  font-size: 16px;
+}
+
+.twentyPx {
+  font-size: 20px;
 }
 
 h1 {
   font-weight: normal;
+  font-size: 20px;
   margin-bottom: 16px;
 }
 
+.copyrightContent {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: var(--drawer-content-font-color);
+  font-size: 12px;
+}
+
 .sidenav button:hover {
-  color: rgb(255, 188, 62);
+  color: var(--hover-button-color);
 }
 
 .sidenav .closebtn {
@@ -106,7 +128,23 @@ h1 {
   bottom: 12px;
   left: 12px;
   font-size: 12px;
-  color: rgb(163, 162, 162);
+  color: rgb(133, 133, 133);
+}
+.rateUsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rateUsContainer h2 {
+  color: var(--drawer-content-font-color);
+  font-weight: normal;
+  font-size: 14px;
+  margin: 0 12px;
+}
+
+.copyrightAndRateUs p {
+  font-size: 12px;
 }
 
 @media screen and (max-height: 450px) {

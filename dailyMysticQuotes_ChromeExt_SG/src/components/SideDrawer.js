@@ -1,9 +1,10 @@
 import React from "react";
 import "./SideDrawer.css";
 import classNames from "classnames";
-import SocialIcons from "./SocialIcons";
-import { ReactComponent as ClockIcon } from "../assets/icons/timer.svg";
-import { ReactComponent as InfoIcon } from "../assets/icons/information.svg";
+import FollowUsSocialIcons from "./FollowUsSocialIcons";
+import { ReactComponent as ClockIcon } from "../assets/icons/timerIcon.svg";
+import { ReactComponent as InfoIcon } from "../assets/icons/informationIcon.svg";
+import { ReactComponent as RateUsIcon } from "../assets/icons/rateUsIcon.svg";
 
 const SideDrawer = React.memo(({ version, isOpen, handleDrawer }) => {
   return (
@@ -23,16 +24,25 @@ const SideDrawer = React.memo(({ version, isOpen, handleDrawer }) => {
           <button className="closebtn" onClick={handleDrawer}>
             &times;
           </button>
-          <div className="infoContainer">
+          <div className="infoContainer sixteenPx">
             <ClockIcon className="icon" />
             <p>Quotes are updated everyday at 8:15 AM IST</p>
           </div>
-          <div className="infoContainer">
+          <div className="infoContainer twentyPx">
             <h1>Tell your friends</h1>
           </div>
-          <div className="infoContainer">
+          <div className="infoContainer twentyPx">
             <h1>Follow us on</h1>
-            <SocialIcons />
+            <FollowUsSocialIcons />
+          </div>
+          <div className="infoContainer ">
+            <div className="rateUsContainer fourteenPx">
+              <RateUsIcon />
+              <h2>Rate Us</h2>
+            </div>
+            <div className="copyrightContent twelvePx">
+              Copyright &copy; 2021, Isha Foundation
+            </div>
           </div>
           <span className="version">v{version}</span>
         </div>
