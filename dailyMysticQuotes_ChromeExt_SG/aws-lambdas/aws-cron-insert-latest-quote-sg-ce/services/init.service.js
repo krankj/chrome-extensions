@@ -11,6 +11,15 @@ const callExit = () => {
   process.exit(1);
 };
 
+const checkTriggerCacheApiKeyEnv = () => {
+  const sgTriggerCacheApiKey =
+    process.env[envConfig.envVars.SG_TRIGGER_CACHE_API_VAR];
+  if (!sgTriggerCacheApiKey) {
+    envVarNotSet(envConfig.envVars.SG_TRIGGER_CACHE_API_VAR);
+    callExit();
+  }
+};
+
 const checkPrivateKeyEnv = () => {
   const sgPrivateKeyVar = process.env[envConfig.envVars.SG_PRIVATE_KEY_VAR];
   if (!sgPrivateKeyVar) {
@@ -30,6 +39,7 @@ const checkTwitterAuthKey = () => {
 const checkEnvVars = () => {
   checkPrivateKeyEnv();
   checkTwitterAuthKey();
+  checkTriggerCacheApiKeyEnv();
 };
 
 const preCheckAppConfig = () => {

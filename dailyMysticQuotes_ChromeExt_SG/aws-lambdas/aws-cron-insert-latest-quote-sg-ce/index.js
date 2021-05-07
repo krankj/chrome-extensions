@@ -1,10 +1,5 @@
-const { fetchAndAdd } = require("./addToDb");
-const logger = require("log4js").getLogger();
-logger.level = "debug";
-require("./services/init.service");
+const { run } = require("./handler");
 
 (async function () {
-  logger.info("[ ***INIT*** ]");
-  await fetchAndAdd();
-  logger.info("[ ***END*** ]");
+  await run("event", { functionName: "aws-lambda-sg-ce-cron-job" });
 })();
