@@ -207,7 +207,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/aws-cron-insert-latest-quote-sg-ce/dev/1620387069842-2021-05-07T11:31:09.842Z/aws-cron-insert-latest-quote-sg-ce.zip"
+          "S3Key": "serverless/aws-cron-insert-latest-quote-sg-ce/dev/1620387496193-2021-05-07T11:38:16.193Z/aws-cron-insert-latest-quote-sg-ce.zip"
         },
         "Handler": "s_cronHandler.handler",
         "Runtime": "nodejs12.x",
@@ -225,14 +225,14 @@
         "CronHandlerLogGroup"
       ]
     },
-    "CronHandlerLambdaVersionJzULPI9zcXjTMbXWOYsTcgehgP5qRKsQ7eyaVD8Q": {
+    "CronHandlerLambdaVersionehLBYS2TjvwXAa3v2lq3byp3CJ4BYXJ71S7UqXZA0I": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "CronHandlerLambdaFunction"
         },
-        "CodeSha256": "2SBmV9XhV8ILkP7oy8rK2LQujaUgtQehhJlCUYxNR9U="
+        "CodeSha256": "RsUF0QdV5rO7PpP5hQ+vVzuOCH9QQsCdWL91q419CPc="
       }
     },
     "CronHandlerEventsRuleSchedule1": {
@@ -306,7 +306,7 @@
     "CronHandlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "CronHandlerLambdaVersionJzULPI9zcXjTMbXWOYsTcgehgP5qRKsQ7eyaVD8Q"
+        "Ref": "CronHandlerLambdaVersionehLBYS2TjvwXAa3v2lq3byp3CJ4BYXJ71S7UqXZA0I"
       },
       "Export": {
         "Name": "sls-aws-cron-insert-latest-quote-sg-ce-dev-CronHandlerLambdaFunctionQualifiedArn"
