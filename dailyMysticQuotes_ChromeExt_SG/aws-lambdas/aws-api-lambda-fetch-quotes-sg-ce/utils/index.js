@@ -51,4 +51,12 @@ exports.fetchFromDbAndCacheLocally = async () => {
   }
 };
 
+exports.isStaleData = (publishedDate) => {
+  const ADD_MINS_OFFSET = 1455;
+  const now = new Date();
+  const nextTriggerDate = new Date(publishedDate);
+  nextTriggerDate.setMinutes(nextTriggerDate.getMinutes() + ADD_MINS_OFFSET);
+  return now.valueOf() >= nextTriggerDate.valueOf();
+};
+
 exports.fetchFromDb = fetchFromDb;
