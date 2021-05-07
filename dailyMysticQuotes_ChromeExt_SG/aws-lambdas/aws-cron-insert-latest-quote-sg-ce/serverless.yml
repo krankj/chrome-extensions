@@ -1,4 +1,4 @@
-org: ishadevops
+org: kjsudi
 app: aws-cron-insert-latest-quote-sg-ce
 service: aws-cron-insert-latest-quote-sg-ce
 
@@ -7,7 +7,7 @@ frameworkVersion: "2"
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: prod
+  stage: dev
   region: ap-south-1
   lambdaHashingVersion: 20201221
 
