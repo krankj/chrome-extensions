@@ -27,7 +27,7 @@ const SideDrawer = React.memo(({ isOpen, handleDrawer, version }) => {
           </button>
           <div className="infoContainer">
             <ClockIcon className="icon" />
-            <p>Quotes are updated everyday at 8:15 AM IST</p>
+            <p>Quotes are updated everyday at 8:30 AM IST</p>
           </div>
           <div className="infoContainer">
             <ContentIcon className="icon" />
